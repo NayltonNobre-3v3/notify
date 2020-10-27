@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email</title>
+    <link rel="import" href="axios" />
+    <!-- <link rel="stylesheet" href="./styles.css"> -->
+    <style>
+      * {
+        overflow: hidden;
+        box-sizing: border-box;
+        font-family: Helvetica, sans-serif;
+      }
+
+      body {
+        max-width: 1000px;
+        min-width: 700px;
+        margin: 0 auto;
+        height: 100vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        padding: 0;
+        margin: 0;
+      }
+
+      .Container-Mail {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        width: 100%;
+        
+      }
+
+      .Container-Mail img {
+        max-width: 15rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .Container-Content {
+        padding: 1rem 2rem;
+        border-radius: 0.8rem;
+        background-color: rgb(255, 255, 255);
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th{
+          font-size: 1rem;
+      }
+      td{
+          font-size: 0.8rem;
+      }
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      table tr:first-child {
+        background-color: rgb(209, 209, 209);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="Container-Mail">
+      <div class="Container-Content">
+        <h1>SENSOR {{cond}} DE {{value}}</h1>
+        <p>O sensor <b>{{sensorName}}</b> está {{cond}} de {{value}}</p>
+        <br />
+        <table>
+          <tr>
+            <th>Primeiro Registro</th>
+            <th>Último resgistro</th>
+          </tr>
+          <tr>
+            <td>{{start}}</td>
+            <td>{{end}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+  <!-- <script src="./permission.js"></script> -->
+</html>
