@@ -4,14 +4,15 @@ const fs = require('fs-extra')
 const path = require('path')
 
 const api = require('../../helpers/monitoring-variables');
-const source = 'C:/Users/davi/Downloads/sns/';
-const writePath = path.resolve(__dirname, '..', 'files.json')
+const source = 'C:/Users/Davis/Downloads';
+const writePath = 'C:/Users/Davis/Downloads/files.json'
 // const writePath = 'C:/Users/davi/Downloads/files.json'
 
 
 
 function makeArray(path, directory, fileNames) {
     return new Promise((resolve, reject) => {
+        
         // Paga a quantidade de arquivos dentro do diretório
         let filesCounter = fileNames.length;
         //   Se não tiver arquivos então retorno um array vazio
@@ -24,12 +25,14 @@ function makeArray(path, directory, fileNames) {
                 //   .then(ret => organizeObj(directory, ret))
                 // Adiciono no array os valores dos arquivos que estou lendo
                 .then(ret => {
+                  
                     return list.push(ret)
                 })
                 .then(_ => {
                     // Se o i do laço for estiver o mesmo valor do tamanho da lista de arquivos dentro do diretório
                     if (i + 1 == filesCounter) {
                         // Retorno o valor da lista só quando ela estiver com todos os arquivos do diretório que estou lendo
+                        
                         if (list.length == filesCounter) return resolve(list);
                         else reject(`Lista menor que o número de arquivos de  ${directory}.`);
                     }
@@ -42,6 +45,7 @@ function getListFiles(path, directory) {
     // Irá listar os arquivos dentro do diretório
     return fs.readdir(path).then(files => {
         //Se tiver arquivos retorno os arquivos dentro do diretório
+        // console.log('FILES= ',path,directory)
         if (files.length) return files;
         //   Se não tiver arquivos então imprimo o error
         else {
@@ -55,7 +59,7 @@ function getListFiles(path, directory) {
     });
 }
 
-module.exports= ()=> {
+export default function getAllSensors() {
     let directories = [
         'sns'
     ];
@@ -64,6 +68,7 @@ module.exports= ()=> {
 
     return getListFiles(`${source}/${directories[0]}/`, directories[0])
         .then(sensors => {
+          
             // sensors = Arquivos dentro do diretório
             return makeArray(`${source}/${directories[0]}/`, directories[0], sensors);
         }).then(data => {
@@ -82,6 +87,9 @@ module.exports= ()=> {
             }
             return;
         })
+    .then(_ =>
+        setTimeout(getAllSensors, 2000)
+    );
 }
 
 // getAllSensors()

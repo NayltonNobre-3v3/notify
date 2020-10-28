@@ -5,7 +5,13 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec babel-node src/server.js "
+    "start": "nodemon  --ignore node_modules --exec babel-node src/server.js ",
+    "knex:migrate": "knex --knexfile knexfile.js migrate:latest"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "node_module"
+    ]
   },
   "keywords": [],
   "author": "",
