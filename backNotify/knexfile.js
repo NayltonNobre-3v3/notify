@@ -1,4 +1,4 @@
-// const path=require('path')
+const path = require("path");
 // Update with your config settings.
 
 // var knex = require('knex')({
@@ -6,27 +6,39 @@
 //   connection: {
 //     host : 'localhost',
 //     user : 'root',
-//     password : '1234',
-//     database : 'test'
+//     password : '123v312',
+//     database : 'newsir'
 //   },
-//   migrations: {
-//     tableName: 'notifications'
-//   },
+
 //   useNullAsDefault: true
 // });
 
 // export default knex
 
+// const path=require('path')
+// module.exports = {
+//     client: 'mysql',
+//     connection:{
+//       host : 'localhost',
+//       user:'root',
+//       password : '123v312',
+//       database : 'newsir'
+//     },
+//     useNullAsDefault: true
 
-const path=require('path')
+// }
+
+// import path from "path";
 module.exports = {
-    client: 'mysql',
-    connection:{
-      host : 'localhost',
-      user:'root',
-      password : '1234',
-      database : 'test'
-    },
-    useNullAsDefault: true
-
-}
+  client: "mysql",
+  connection: {
+    host: "localhost",
+    user: "root",
+    password: "123v312",
+    database: "newsir",
+  },
+  migrations: {
+    directory: path.resolve(__dirname, "src", "database", "migrations"),
+  },
+  useNullAsDefault: true,
+};

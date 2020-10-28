@@ -1,5 +1,5 @@
 import { Router } from "express";
-import database from "../knexfile";
+import database from "../src/database/connections";
 
 const route = Router();
 
@@ -107,7 +107,7 @@ route.get("/sensor-alert/:id", (req, res) => {
 });
 
 
-
+// Irá monitorar os sensores
 createAPI();
 
 export default route;

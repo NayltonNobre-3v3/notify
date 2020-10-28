@@ -2,9 +2,10 @@ import mailer from "../modules/nodemail";
 
 import fs from "fs-extra";
 
-import knex from "../../knexfile";
+import knex from "../../src/database/connections";
 import moment from "moment";
-const source = "C:/Users/Davis/Downloads/files.json";
+// Leitura do arquivo JSON
+const source = "C:/Users/davi/Downloads/files.json";
 
 let off_range_sensors = [];
 let current_date = Date.now();
@@ -14,6 +15,7 @@ export default function createAPI() {
     return fs
       .readJson(source, "utf-8")
       .then((files) => {
+        
         knex("notifications")
           // PEGO DO BANCO
           .then((ndata) => {
@@ -129,7 +131,6 @@ export default function createAPI() {
                           off_range.COND === banco.COND
                         );
                       });
-                      console.log("INCLUDE= ", include);
                       // Se não existir no array
                       if (include < 0) {
                         off_range_sensors.push(...off_range_sensors, {

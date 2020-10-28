@@ -1,6 +1,6 @@
-
+tableName = 'notifications'
 exports.up = function (knex) {
-    return knex.schema.createTable('notifications', function (table) {
+    return knex.schema.createTable(tableName, function (table) {
         table.increments('ID').primary();
         table.integer('ID_SENSOR ').notNullable();
         table.string('NAME').notNullable();
@@ -15,5 +15,5 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-    return knex.schema.dropTable('notifications');
+    return knex.schema.dropTable(tableName);
 };

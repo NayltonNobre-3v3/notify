@@ -4,7 +4,11 @@ const fs = require('fs-extra')
 const path = require('path')
 
 const api = require('../../helpers/monitoring-variables');
-const source = 'C:/Users/davi/Downloads';
+// const source = 'C:/Users/davi/Downloads';
+// Caminho do arquivo que irá ser concatenado
+const source = 'mnt/fcir';
+
+// Local + Nome do arquivo que irá gerar
 const writePath = 'C:/Users/davi/Downloads/files.json'
 // const writePath = 'C:/Users/davi/Downloads/files.json'
 
