@@ -7,7 +7,7 @@ import getAllSensors from './WriteRead/function/concatTxt.js'
 const fs = require('fs-extra')
 const path = require('path')
 
-const api = require('../src/helpers/monitoring-variables');
+const api = require('./helpers/monitoring-variables');
 const source = 'C:/Users/davi/Downloads';
 const writePath = 'C:/Users/davi/Downloads/files.json'
 
