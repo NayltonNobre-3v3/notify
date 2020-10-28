@@ -1,9 +1,15 @@
-import { Router } from "express";
-import database from "../src/database/connections";
+// import { Router } from "express";
+// const Router=require("express")
+// import database from "../src/database/connections";
 
-const route = Router();
+const express=require("express")
+const database=require("../src/database/connections")
 
-import createAPI from "./monitoring/MonitoringSNS"
+// const route = Router();
+const route = express.Router();
+
+// import createAPI from "./monitoring/MonitoringSNS"
+const createAPI=require("./monitoring/MonitoringSNS") 
 
 route.get("/get-sensor-monitoring/:id", (req, res) => {
   const file = require("C:/Users/davi/Downloads/files.json");
@@ -110,4 +116,5 @@ route.get("/sensor-alert/:id", (req, res) => {
 // Irá monitorar os sensores
 createAPI();
 
-export default route;
+// export default route;
+module.exports= route;

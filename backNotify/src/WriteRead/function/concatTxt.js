@@ -1,4 +1,4 @@
-import { writeFile } from 'fs';
+// import { writeFile } from 'fs';
 
 const fs = require('fs-extra')
 const path = require('path')
@@ -63,7 +63,7 @@ function getListFiles(path, directory) {
     });
 }
 
-export default function getAllSensors() {
+module.exports= function getAllSensors() {
     let directories = [
         'sns'
     ];

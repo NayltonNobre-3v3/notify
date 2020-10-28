@@ -13,4 +13,4 @@ var knex = require('knex')({
   useNullAsDefault: true
 });
 
-export default knex
+module.exports= knex

@@ -1,9 +1,13 @@
-import mailer from "../modules/nodemail";
+// import mailer from "../modules/nodemail";
+const mailer=require("../modules/nodemail")
 
-import fs from "fs-extra";
+// import fs from "fs-extra";
+const fs=require( "fs-extra")
 
-import knex from "../../src/database/connections";
-import moment from "moment";
+// import knex from "../../src/database/connections";
+const knex=require("../../src/database/connections")
+// import moment from "moment";
+const moment=require("moment")
 // Leitura do arquivo JSON
 const source = "C:/Users/davi/Downloads/files.json";
 
@@ -11,7 +15,7 @@ let off_range_sensors = [];
 let current_date = Date.now();
 
 // Alertar sensor
-export default function createAPI() {
+module.exports= function createAPI() {
     return fs
       .readJson(source, "utf-8")
       .then((files) => {
