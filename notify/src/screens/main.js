@@ -11,7 +11,6 @@ import "./style.css";
 import { useSelector, useDispatch } from "react-redux";
 import { listSensor } from "../Actions/SensorListActions";
 
-
 function Main() {
   const [medicao, setMedicao] = useState([]);
   const [medicaoEdit, setMedicaoEdit] = useState([]);
@@ -29,8 +28,6 @@ function Main() {
   const [condSensor, setCondSensor] = useState("");
   const [TimeSensor, setTimeSensor] = useState(0);
   const [DestSensor, setDestSensor] = useState("");
-
-
 
   // Pego a o meu estado
   const SensorList = useSelector((state) => state.sensorList);
@@ -63,27 +60,27 @@ function Main() {
     getValues();
   }, [local]);
 
-  useEffect(()=>{
-      // console.log('APAGANDO')
-  },[nameSensor])
+  useEffect(() => {
+    // console.log('APAGANDO')
+  }, [nameSensor]);
   // Extrai as medições do sensor específico
   async function ListOneSensor(e) {
     const data = await api.get(`get-sensor-monitoring/${e.target.value}`);
     const json = JSON.stringify(data.data);
     const medicao = JSON.parse(json);
     // const values = Object.values(medicao).map((item) => item.MEASURES);
-    const values = medicao.map(item=>item.TYPE);
+    const values = medicao.map((item) => item.TYPE);
     setMedicao(values);
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
     // console.log('MEDIÇÃO= ',values)
   }
- 
+
   async function ListOneSensorEdit(e) {
     const data = await api.get(`get-sensor-monitoring/${e}`);
     const json = JSON.stringify(data.data);
     const medicao = JSON.parse(json);
-    const values = medicao.map(item=>item.TYPE);
+    const values = medicao.map((item) => item.TYPE);
     setMedicao(values);
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
@@ -119,7 +116,6 @@ function Main() {
         draggable: true,
         progress: undefined,
       });
-
     } catch (error) {
       toast.error("Opa colega, deu error aí", {
         position: "top-left",
@@ -130,10 +126,10 @@ function Main() {
         draggable: true,
         progress: undefined,
       });
-      return
+      return;
     }
   }
-  async function submitHandlePUT(e){
+  async function submitHandlePUT(e) {
     e.preventDefault();
 
     let obj = {
@@ -164,7 +160,6 @@ function Main() {
         draggable: true,
         progress: undefined,
       });
-
     } catch (error) {
       toast.error("Opa colega, deu error aí", {
         position: "top-left",
@@ -175,7 +170,7 @@ function Main() {
         draggable: true,
         progress: undefined,
       });
-      return
+      return;
     }
   }
 
@@ -186,280 +181,265 @@ function Main() {
     // setItems(local);
   }
 
-  function ShowEditForm(data){
+  function ShowEditForm(data) {
     // console.log(data)
-    ListOneSensorEdit(data.ID_SENSOR)
+    ListOneSensorEdit(data.ID_SENSOR);
     // setIdSensor(data.ID_SENSOR)
     // setNameSensor(data.NAME)
-    setValueSensor(data.VALUE) 
-    setCondSensor(data.COND) 
-    setTimeSensor(data.TIME)
-    setIDAlert(data.ID)
-    setDestSensor(data.EMAIL) 
-    setShowEdit(true)
+    setValueSensor(data.VALUE);
+    setCondSensor(data.COND);
+    setTimeSensor(data.TIME);
+    setIDAlert(data.ID);
+    setDestSensor(data.EMAIL);
+    setShowEdit(true);
   }
-  function hideEditForm(){
-    setIdSensor(0)
-    setNameSensor(" ")
-    setValueSensor("") 
-    setUnitSensor("") 
-    setCondSensor("0") 
-    setTimeSensor(0)
-    setDestSensor("") 
-    setItems(0)
-    setShowEdit(false)
+  function hideEditForm() {
+    setMedicao([]);
+    setIdSensor(0);
+    setNameSensor("");
+    setValueSensor("");
+    setUnitSensor("");
+    setCondSensor("0");
+    setTimeSensor(0);
+    setDestSensor("");
+    setItems(0);
+    setShowEdit(false);
   }
-  
+  console.log("NAME SENSOR= ", nameSensor);
   return (
     <div className="container">
       <main>
         <div className="monitSelect">
           {ShowEdit ? (
             <form onSubmit={submitHandlePUT}>
-            <fieldset>
-              <h1 id="titleForm">Editar Alarme</h1>
-              <hr />
-              <br />
-              <div className="input-group">
-                <label htmlFor="selectModel">Nome do sensor:</label>
-                <select
-                  id="selectModel"
-                  onChange={ListOneSensor}
-                  required
-                  title="Nome do sensor"
-                  defaultValue={nameSensor}
+              <fieldset>
+                <h1 id="titleForm">Editar Alarme</h1>
+                <hr />
+                <br />
+                <div className="input-group">
+                  <label htmlFor="selectModel">Nome do sensor:</label>
+                  <select
+                    id="selectModel"
+                    onChange={ListOneSensor}
+                    required
+                    title="Nome do sensor"
+                    value={nameSensor}
                   >
-                  {console.log('NAME SENSOR= ',nameSensor)}
-                  
-                  <option value={idSensor}>{nameSensor}</option>
-                  
-                  {sensors.map((e, i) => (
-                    <option value={e.ID} key={i}>
-                      {e.NAME}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                    <option value={idSensor}>{nameSensor}</option>
 
-              <div className="input-group">
-                <label htmlFor="selectMeasures">Medição:</label>
-                <select
-                  id="selectMeasures"
-     
-                  onChange={(e) => setValueSensor(e.target.value)}
-                  title="Medida do sensor"
-                  required
-                  // value={}
-                >
-                  {medicao.map((item) =>
-                    item.map((e, i) => (
-                      <option value={`${i}`} key={i} data={e.UNIT}>
-                        {e}
-                        {/* {"SELECIONANDO= ",console.log(e)} */}
+                    {sensors.map((e, i) => (
+                      <option value={e.ID} key={i}>
+                        {e.NAME}
                       </option>
-                    ))
-                  )}
-                </select>
-              </div>
+                    ))}
+                  </select>
+                </div>
 
-              <div className="input-group">
-                <label htmlFor="selectUnit">
-                  Valor: 
-                </label>
-                <input
-                  type="text"
-                  id="ValueInput"
-                  defaultValue={valueSensor}
-                  onChange={(e) => setUnitSensor(e.target.value)}
-                />
-              </div>
-
-              <div className="input-group">
-                <label htmlFor="condition">Condição:</label>
-                <select
-
-                  onChange={(e) => {
-                    setCondSensor(e.target.value);
-                  }}
-                  title="Condição para alarmar"
-                  value={condSensor}
-                  required
-                >
-                  
-                  <option value="ACIMA">Acima</option>
-                  <option value="ABAIXO">Abaixo</option>
-                </select>
-              </div>
-
-              <div className="input-group">
-                <label htmlFor="selectTime" title="Tempo em minutos">
-                  Tempo (minutos):
-            </label>
-                <input
-                  id="selectTime"
-                  type="number"
-                  value={TimeSensor}
-                  placeholder="Selecione o tempo"
-                  min={0}
-                  max={59}
-
-                  onChange={(e) => setTimeSensor(e.target.value)}
-                  required
-                ></input>
-              </div>
-
-              <div className="input-group">
-                <label htmlFor="selectDest" title="Destinatário">
-                  Destinatário:
-            </label>
-                <input
-                  id="selectDest"
-                  type="email"
-                  value={DestSensor}
-                  placeholder="Selecione o destinatário"
-
-                  onChange={(e) => setDestSensor(e.target.value)}
-                  required
-                ></input>
-              </div>
-              <div className="buttons-container">
-                <button
-                  type="submit"
-
-                >
-                  Atualizar alerta
-            </button>
-                <button
-                  type="button"
-                  onClick={_=>hideEditForm()}
-                >
-                  Voltar
-            </button>
-              </div>
-            </fieldset>
-          </form>
-          ) : (
-              <form onSubmit={submitHandle}>
-                <fieldset>
-                  <h1 id="titleForm">Criar Alarme</h1>
-                  <hr />
-                  <br />
-                  <div className="input-group">
-                    <label htmlFor="selectModel">Nome do sensor:</label>
-                    <select
-                      id="selectModel"
-                      onChange={ListOneSensor}
-                      required
-                      title="Nome do sensor"
-                      defaultValue="1"
-                    >
-                      <option value="1" disabled>
-                        Selecione
-                  </option>
-                      {sensors.map((e, i) => (
-                        <option value={e.ID} key={i}>
-                          {e.NAME}
+                <div className="input-group">
+                  <label htmlFor="selectMeasures">Medição:</label>
+                  <select
+                    id="selectMeasures"
+                    onChange={(e) => setValueSensor(e.target.value)}
+                    title="Medida do sensor"
+                    required
+                    // value={}
+                  >
+                    {medicao.map((item) =>
+                      item.map((e, i) => (
+                        <option value={`${i}`} key={i} data={e.UNIT}>
+                          {e}
+                          {/* {"SELECIONANDO= ",console.log(e)} */}
                         </option>
-                      ))}
-                    </select>
-                  </div>
+                      ))
+                    )}
+                  </select>
+                </div>
 
-                  <div className="input-group">
-                    <label htmlFor="selectMeasures">Medição:</label>
-                    <select
-                      id="selectMeasures"
-                      disabled={medicao.length === 0 ? true : false}
-                      onChange={(e) => setValueSensor(e.target.value)}
-                      title="Medida do sensor"
-                      // defaultValue={nameSensor?"1":condSensor}
-                      required
-                    >
-                      <option value="1" disabled>
-                        {/* {console.log(nameSensor ===0?'EXISTE':'VAZIO' )} */}
-                        Selecione
-                  </option>
-                      {medicao.map((item) =>
-                        item.map((e, i) => (
-                          <option value={`${i}`} key={i}>
-                            {e}
-                          </option>
-                        ))
-                      )}
-                    </select>
-                  </div>
+                <div className="input-group">
+                  <label htmlFor="selectUnit">Valor:</label>
+                  <input
+                    type="text"
+                    id="ValueInput"
+                    value={valueSensor}
+                    onChange={(e) => setUnitSensor(e.target.value)}
+                  />
+                </div>
 
-                  <div className="input-group">
-                    <label htmlFor="selectUnit">
-                      Valor: 
-                    </label>
-                    <input
-                      type="text"
-                      id="ValueInput"
-                      onChange={(e) => setUnitSensor(e.target.value)}
-                    />
-                  </div>
+                <div className="input-group">
+                  <label htmlFor="condition">Condição:</label>
+                  <select
+                    onChange={(e) => {
+                      setCondSensor(e.target.value);
+                    }}
+                    title="Condição para alarmar"
+                    value={condSensor}
+                    required
+                  >
+                    <option value="ACIMA">Acima</option>
+                    <option value="ABAIXO">Abaixo</option>
+                  </select>
+                </div>
 
-                  <div className="input-group">
-                    <label htmlFor="condition">Condição:</label>
-                    <select
-                      disabled={medicao.length === 0 ? true : false}
-                      onChange={(e) => {
-                        setCondSensor(e.target.value);
-                      }}
-                      title="Condição para alarmar"
-                      defaultValue={!condSensor?"0":condSensor}
-                      required
-                      >
-                      <option value="0" disabled>
-                        Selecione
-                  </option>
-                      <option value="ACIMA">Acima</option>
-                      <option value="ABAIXO">Abaixo</option>
-                    </select>
-                  </div>
+                <div className="input-group">
+                  <label htmlFor="selectTime" title="Tempo em minutos">
+                    Tempo (minutos):
+                  </label>
+                  <input
+                    id="selectTime"
+                    type="number"
+                    value={TimeSensor}
+                    placeholder="Selecione o tempo"
+                    min={0}
+                    max={59}
+                    onChange={(e) => setTimeSensor(e.target.value)}
+                    required
+                  ></input>
+                </div>
 
-                  <div className="input-group">
-                    <label htmlFor="selectTime" title="Tempo em minutos">
-                      Tempo (minutos):
-                </label>
-                    <input
-                      id="selectTime"
-                      type="number"
-                      value={TimeSensor}
-                      placeholder="Selecione o tempo"
-                      min={0}
-                      max={59}
-                      disabled={medicao.length === 0 ? true : false}
-                      onChange={(e) => setTimeSensor(e.target.value)}
-                      required
-                    ></input>
-                  </div>
+                <div className="input-group">
+                  <label htmlFor="selectDest" title="Destinatário">
+                    Destinatário:
+                  </label>
+                  <input
+                    id="selectDest"
+                    type="email"
+                    value={DestSensor}
+                    placeholder="Selecione o destinatário"
+                    onChange={(e) => setDestSensor(e.target.value)}
+                    required
+                  ></input>
+                </div>
+                <div className="buttons-container">
+                  <button type="submit">Atualizar alerta</button>
+                  <button type="button" onClick={(_) => hideEditForm()}>
+                    Voltar
+                  </button>
+                </div>
+              </fieldset>
+            </form>
+          ) : (
+            <form onSubmit={submitHandle}>
+              <fieldset>
+                <h1 id="titleForm">Criar Alarme</h1>
+                <hr />
+                <br />
+                <div className="input-group">
+                  <label htmlFor="selectModel">Nome do sensor:</label>
+                  <select
+                    id="selectModel"
+                    onChange={ListOneSensor}
+                    value={nameSensor ? idSensor : "1"}
 
-                  <div className="input-group">
-                    <label htmlFor="selectDest" title="Destinatário">
-                      Destinatário:
-                </label>
-                    <input
-                      id="selectDest"
-                      type="email"
-                      value={DestSensor}
-                      placeholder="Selecione o destinatário"
-                      disabled={medicao.length === 0 ? true : false}
-                      onChange={(e) => setDestSensor(e.target.value)}
-                      required
-                    ></input>
-                  </div>
-                  <div className="buttons-container">
-                    <button
-                      type="submit"
-                      disabled={medicao.length === 0 ? true : false}
-                    >
-                      Criar Alerta
-                </button>
-                  </div>
-                </fieldset>
-              </form>
-            )}
+                    required
+                    title="Nome do sensor"
+                  >
+                    <option value="1" disabled>
+                      Selecione
+                    </option>
+                    {sensors.map((e, i) => (
+                      <option value={e.ID} key={i}>
+                        {e.NAME}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="selectMeasures">Medição:</label>
+                  <select
+                    id="selectMeasures"
+                    disabled={medicao.length === 0 ? true : false}
+                    onChange={(e) => setValueSensor(e.target.value)}
+                    title="Medida do sensor"
+                    // defaultValue={nameSensor?"1":condSensor}
+                    required
+                  >
+                    <option value="1" disabled>
+                      {/* {console.log(nameSensor ===0?'EXISTE':'VAZIO' )} */}
+                      Selecione
+                    </option>
+                    {medicao.map((item) =>
+                      item.map((e, i) => (
+                        <option value={`${i}`} key={i}>
+                          {e}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="selectUnit">Valor:</label>
+                  <input
+                    type="text"
+                    id="ValueInput"
+                    onChange={(e) => setUnitSensor(e.target.value)}
+                    value={unitSensor}
+                    disabled={medicao.length === 0 ? true : false}
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="condition">Condição:</label>
+                  <select
+                    disabled={medicao.length === 0 ? true : false}
+                    onChange={(e) => {
+                      setCondSensor(e.target.value);
+                    }}
+                    title="Condição para alarmar"
+                    defaultValue={!condSensor ? "0" : condSensor}
+                    required
+                  >
+                    <option value="0" disabled>
+                      Selecione
+                    </option>
+                    <option value="ACIMA">Acima</option>
+                    <option value="ABAIXO">Abaixo</option>
+                  </select>
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="selectTime" title="Tempo em minutos">
+                    Tempo (minutos):
+                  </label>
+                  <input
+                    id="selectTime"
+                    type="number"
+                    value={TimeSensor}
+                    placeholder="Selecione o tempo"
+                    min={0}
+                    max={59}
+                    disabled={medicao.length === 0 ? true : false}
+                    onChange={(e) => setTimeSensor(e.target.value)}
+                    required
+                  ></input>
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="selectDest" title="Destinatário">
+                    Destinatário:
+                  </label>
+                  <input
+                    id="selectDest"
+                    type="email"
+                    value={DestSensor}
+                    placeholder="Selecione o destinatário"
+                    disabled={medicao.length === 0 ? true : false}
+                    onChange={(e) => setDestSensor(e.target.value)}
+                    required
+                  ></input>
+                </div>
+                <div className="buttons-container">
+                  <button
+                    type="submit"
+                    disabled={medicao.length === 0 ? true : false}
+                  >
+                    Criar Alerta
+                  </button>
+                </div>
+              </fieldset>
+            </form>
+          )}
         </div>
 
         <div className="mySchedule">
@@ -482,10 +462,16 @@ function Main() {
                     <p>Tempo para enviar alerta: {e.TIME / 60} min</p>
                   </div>
                   <div id="footer-Container">
-                    <p className="date-detail">Alerta criado em {e.created_at}</p>
-                
+                    <p className="date-detail">
+                      Alerta criado em {e.created_at}
+                    </p>
+
                     <div id="buttons-Container">
-                      <button type="button" className="edit-button" onClick={() => ShowEditForm(e)}>
+                      <button
+                        type="button"
+                        className="edit-button"
+                        onClick={() => ShowEditForm(e)}
+                      >
                         <FaPen color="white" />
                       </button>
                       <button
@@ -499,8 +485,11 @@ function Main() {
                 </li>
               ))
             ) : (
-                <div id="not-found"> <AiFillFrown size={60} /> Nenhum alerta registrado</div>
-              )}
+              <div id="not-found">
+                {" "}
+                <AiFillFrown size={60} /> Nenhum alerta registrado
+              </div>
+            )}
           </ul>
         </div>
       </main>

@@ -72,7 +72,7 @@ module.exports= function createAPI() {
                             mailer.sendMail(
                               {
                                 from: "sir3v3@gmail.com",
-                                to: "davispenha@gmail.com",
+                                to:banco.EMAIL,
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
