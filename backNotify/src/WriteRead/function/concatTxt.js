@@ -70,7 +70,7 @@ module.exports= function getAllSensors() {
     // Array de sensores que irei usar para enviar para api.sensorMonitoring
     let allSensors = [];
 
-    return getListFiles(`${source}/${directories[0]}/`, directories[0])
+    return getListFiles(`${source}/${directories[0]}`, directories[0])
         .then(sensors => {
           
             // sensors = Arquivos dentro do diretório
