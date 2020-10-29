@@ -7,14 +7,14 @@ const bodyParser=require("body-parser")
 // import route from "./routes";
 const route=require("./routes")
 // import getAllSensors from './WriteRead/function/concatTxt.js'
-const getAllSensors=require('./WriteRead/function/concatTxt.js')
+const getAllSensors=require('./WriteRead/function/ReadConcat')
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Transforma TXT em JSON para realizar a leitura dos sensores
+// Transforma TXT em JSON e realiza a leitura dos sensores
 getAllSensors()
 
 

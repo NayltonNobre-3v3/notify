@@ -1,6 +1,6 @@
 // import { writeFile } from 'fs';
 
-const fs = require('fs-extra')
+
 const path = require('path')
 
 const api = require('../../helpers/monitoring-variables');
