@@ -100,7 +100,7 @@ route.delete("/delete-sensor-alert/:id", (req, res) => {
     });
   return res
     .status(200)
-    .json({ message: `Alerta com ID = ${req.params.id} deletado com sucesso` });
+    .json({ data: `Alerta com ID = ${req.params.id} deletado com sucesso` });
 });
 
 route.get("/sensors-alert", (req, res) => {

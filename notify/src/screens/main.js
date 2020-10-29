@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaPen, FaTrash } from "react-icons/fa";
 import { AiFillAlert, AiFillFrown } from "react-icons/ai";
-import { Link } from "react-router-dom";
 import api from "../api/api";
 import moment from "moment";
 import { toast, Zoom } from "react-toastify";
@@ -9,15 +8,12 @@ import { toast, Zoom } from "react-toastify";
 import "./style.css";
 
 import { useSelector, useDispatch } from "react-redux";
-import { listSensor } from "../Actions/SensorListActions";
+import { listSensor,Delete,listSensorAlert,Save } from "../Actions/SensorListActions";
 
 function Main() {
   const [medicao, setMedicao] = useState([]);
-  const [medicaoEdit, setMedicaoEdit] = useState([]);
-  const [alertItems, setAlert] = useState([]);
   const [array, setArray] = useState([]);
   const [local, setItems] = useState([]);
-  const [editable, setEditable] = useState({});
   const [ShowEdit, setShowEdit] = useState(false);
   const [IDAlert, setIDAlert] = useState(0);
 
@@ -37,6 +33,43 @@ function Main() {
   const SensorListOne = useSelector((state) => state.sensorDetail);
   const { sensor, loading: loadingSensor, error: ErrorSensor } = SensorListOne;
 
+  // SENSOR DELETE
+  const sensorDel = useSelector((state) => state.SensorDelete);
+  const {
+    loading: loadingDelete,
+    error: errorDelete,
+    sucess: sucessDelete,
+  } = sensorDel;
+
+  // SENSOR ALERT
+  const sensorAlert = useSelector((state) => state.SensorAlertList);
+  const {
+    loading: loadingAlert,
+    error: errorAlert,
+    sucess: sucessAlert,
+  } = sensorAlert;
+
+  const sensorSave = useSelector((state) => state.SensorSave);
+  const {
+    loading: loadingSave,
+    error: errorSave,
+    sucess: sucessSave,
+  } = sensorSave;
+
+  if(ErrorSensor){
+    toast.error("Error ao carregar os sensores", {
+      position: "top-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
+
+  
+
   // Disparador de actions
   const dispatch = useDispatch();
 
@@ -47,22 +80,19 @@ function Main() {
 
   // Sempre que eu alterar o array irá alterar
   useEffect(() => {
-    async function getValues() {
-      const { data } = await api.get("sensors-alert");
-    }
-    getValues();
-  }, [array]);
-  useEffect(() => {
-    async function getValues() {
-      const { data } = await api.get("sensors-alert");
-      setItems(data.data);
-    }
-    getValues();
-  }, [local]);
+    dispatch(listSensorAlert())
+  }, [array,sucessSave]);
 
+  // Sempre que eu deletar um sensor e a operação for realizada com sucesso então
+  // irá recarregar os dados
   useEffect(() => {
-    // console.log('APAGANDO')
-  }, [nameSensor]);
+      async function getValues() {
+        const { data } = await api.get("sensors-alert");
+        setItems(data.data);
+      }
+      getValues();
+    }, [sucessDelete]);
+
   // Extrai as medições do sensor específico
   async function ListOneSensor(e) {
     const data = await api.get(`get-sensor-monitoring/${e.target.value}`);
@@ -97,37 +127,8 @@ function Main() {
       TIME: Number(TimeSensor),
       EMAIL: DestSensor,
     };
+    dispatch(Save(obj))
     // console.log("OBJ= ", obj);
-    try {
-      const data = await api.post("post-sensor-alert", obj);
-      // console.log("ERROR= ", data);
-
-      if (array.length === 0) {
-        setArray([data.data]);
-      } else {
-        setArray([...array, data.data]);
-      }
-      toast.success(`Alarme criado com sucesso!`, {
-        position: "top-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {
-      toast.error("Opa colega, deu error aí", {
-        position: "top-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      return;
-    }
   }
   async function submitHandlePUT(e) {
     e.preventDefault();
@@ -176,7 +177,7 @@ function Main() {
 
   async function handleDelete(id) {
     if (window.confirm("Tem certeza que deseja deletar o alarme?")) {
-      await api.delete(`/delete-sensor-alert/${id}`);
+      dispatch(Delete(id));
     }
     // setItems(local);
   }
