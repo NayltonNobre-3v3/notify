@@ -14,14 +14,23 @@ const createAPI=require("./monitoring/MonitoringSNS")
 const api=require("../src/variables_api/monitoring-variables")
 
 route.get("/get-sensor-monitoring/:id", (req, res) => {
-  const file = require("C:/Users/davi/Downloads/files.json");
-  const data = file.filter((e) => e.ID === Number(req.params.id));
-  return res.status(200).json(data);
+  // const file = require("C:/Users/davi/Downloads/files.json");
+  // const data=api.sensorMonitoring.map(e=>e.ID===req.params.id)
+  let data=[]
+  api.sensorMonitoring.map(e=>{
+    data.push(JSON.parse(e))
+  })
+  const filter = data.filter((e) => e.ID === Number(req.params.id));
+
+  return res.status(200).json(filter);
 });
 route.get("/get-sensor-monitoring", (req, res) => {
-  console.log("API= ",api.sensorMonitoring)
-  const file = require("C:/Users/davi/Downloads/files.json");
-  return res.status(200).json(file);
+  // console.log("API= ",api.sensorMonitoring)
+  let data=[]
+  api.sensorMonitoring.map(e=>{
+    data.push(JSON.parse(e))
+  })
+  return res.status(200).json(data);
 });
 route.post("/post-sensor-alert", async (req, res) => {
   const { TIME, VALUE, NAME, ID_SENSOR, EMAIL, COND, POSITION } = req.body;

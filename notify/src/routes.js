@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import MainScreen from "./screens/main";
-import EditScreen from './screens/Edit'
+
 
 function Routes() {
   return (

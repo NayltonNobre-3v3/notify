@@ -1,10 +1,11 @@
-const DIR = "/mnt/fcir/sns";
-// const DIR = "C:/Users/davi/Downloads/sns";
+// const DIR = "/mnt/fcir/sns";
+const DIR = "C:/Users/davi/Downloads/sns";
 const fs = require("fs-extra");
 const knex = require("../../database/connections");
 const moment=require("moment")
 const mailer=require("../../modules/nodemail")
 let sensors_monit = [];
+const api=require("../../variables_api/monitoring-variables")
 
 let off_range_sensors = [];
 let current_date = Date.now();
@@ -17,11 +18,11 @@ const loop = () => {
        arr.map(e=>{
          sensors_monit.push(JSON.parse(e))
        })
-       return true
+       return arr
       })
+      .then(arr=>api.sensorMonitoring=arr)
       .then((_) => {
         
-
         knex("notifications")
           // PEGO DO BANCO
           .then((ndata) => {

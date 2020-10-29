@@ -205,7 +205,7 @@ function Main() {
     setItems(0);
     setShowEdit(false);
   }
-  console.log("NAME SENSOR= ", nameSensor);
+
   return (
     <div className="container">
       <main>
@@ -214,7 +214,6 @@ function Main() {
             <form onSubmit={submitHandlePUT}>
               <fieldset>
                 <h1 id="titleForm">Editar Alarme</h1>
-                <hr />
                 <br />
                 <div className="input-group">
                   <label htmlFor="selectModel">Nome do sensor:</label>
@@ -321,7 +320,6 @@ function Main() {
             <form onSubmit={submitHandle}>
               <fieldset>
                 <h1 id="titleForm">Criar Alarme</h1>
-                <hr />
                 <br />
                 <div className="input-group">
                   <label htmlFor="selectModel">Nome do sensor:</label>
@@ -443,9 +441,9 @@ function Main() {
         </div>
 
         <div className="mySchedule">
-          <div>
+          {/* <div>
             <AiFillAlert color="#ffcc66" size={50} /> <p>Alertas</p>
-          </div>
+          </div> */}
           <ul className="list-cards">
             {/* */}
             {local && local.length !== 0 ? (

@@ -46,13 +46,18 @@
 }
 .container main {
   width: 100%;
+  max-width: 1400px;
+  height: 100%;
   display: flex;
   padding: 40px;
-  display: flex;
-  align-items: flex-end;
+  display: grid;
+  grid-template-areas:"Form List" ;
+  grid-gap:10px;
+  /* align-items: flex-end; */
 }
 .container main .monitSelect {
-  width: 480px;
+  grid-area:Form;
+  /* width: 380px; */
 }
 .container main .monitSelect form {
   width: 100%;
@@ -107,9 +112,10 @@ transition: background-color 50000s ease-in-out 0s, color 5000s ease-in-out 0s;
 }
 /* CARDS SENSORS */
 .mySchedule {
-  width: 80%;
-  margin-left: 20px;
-  height: 420px;
+  grid-area:List;
+  /* height: 420px; */
+  height: 100%;
+  overflow-y: auto;
 
 }
 
@@ -140,8 +146,9 @@ transition: background-color 50000s ease-in-out 0s, color 5000s ease-in-out 0s;
 }
 .mySchedule ul {
   list-style: none;
-  max-height: 400px;
-  overflow-y: auto;
+  /* max-height: 810px; */
+  height: 100%;
+  
   
 }
 .mySchedule ul li {
@@ -193,6 +200,9 @@ transition: background-color 50000s ease-in-out 0s, color 5000s ease-in-out 0s;
   color: rgb(59, 59, 59);
     font-weight: 900;
 }
+.head-card hr{
+  color: #17a2b8;
+}
 .head-card h5{
     color: rgb(231, 80, 80);
     font-weight: 700;
@@ -238,8 +248,8 @@ transition: background-color 50000s ease-in-out 0s, color 5000s ease-in-out 0s;
   font-size: 16px;
 
 }
-.buttons-container button[type=reset]{
-  background-color: rgb(228, 228, 228);
+.buttons-container button[type=button]{
+  background-color: rgb(233, 232, 232);
   font-weight: 500;
   font-size: 16px;
   border: solid 2px rgb(228, 228, 228);
