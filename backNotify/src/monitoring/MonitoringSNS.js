@@ -8,6 +8,7 @@ const fs=require( "fs-extra")
 const knex=require("../../src/database/connections")
 // import moment from "moment";
 const moment=require("moment")
+const api=require("../variables_api/monitoring-variables")
 // Leitura do arquivo JSON
 const source = "C:/Users/davi/Downloads/files.json";
 
@@ -16,6 +17,7 @@ let current_date = Date.now();
 
 // Alertar sensor
 module.exports= function createAPI() {
+  
     return fs
       .readJson(source, "utf-8")
       .then((files) => {
@@ -27,6 +29,7 @@ module.exports= function createAPI() {
             ndata.map((banco) => {
               // MAP DO JSON
               files.map((json) => {
+                console.log('API SENSOR= ',json)
                 current_date = Date.now();
                 // SE O ID QUE ESTIVER NO BANCO FOR IGUAL AO ID DO JSON QUE ESTOU PERCORRENDO
                 if (json.ID === banco.ID_SENSOR) {
