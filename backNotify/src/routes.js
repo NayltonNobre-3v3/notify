@@ -5,7 +5,7 @@ const database = require("../src/database/connections")
 const route = express.Router();
 const api = require("../src/variables_api/monitoring-variables")
 
-route.get("/get-sensor-monitoring/:id", (req, res) => {
+route.get("/notify-get-sensors/:id", (req, res) => {
   let data = []
   api.sensorMonitoring.map(e => {
     data.push(JSON.parse(e))
@@ -14,14 +14,14 @@ route.get("/get-sensor-monitoring/:id", (req, res) => {
 
   return res.status(200).json(filter);
 });
-route.get("/get-sensor-monitoring", (req, res) => {
+route.get("/notify-get-sensors", (req, res) => {
   let data = []
   api.sensorMonitoring.map(e => {
     data.push(JSON.parse(e))
   })
   return res.status(200).json(data);
 });
-route.post("/post-sensor-alert", async (req, res) => {
+route.post("/notify-post-sensor-alert", async (req, res) => {
   const { TIME, VALUE, NAME, ID_SENSOR, EMAIL, COND, POSITION } = req.body;
   const duplicate = await database("notifications")
     .where("ID_SENSOR", ID_SENSOR)
@@ -56,7 +56,7 @@ route.post("/post-sensor-alert", async (req, res) => {
   }
 });
 
-route.put("/put-sensor-alert/:id", (req, res) => {
+route.put("/notify-put-sensor-alert/:id", (req, res) => {
   const { TIME, VALUE, NAME, ID_SENSOR, EMAIL, COND, POSITION } = req.body;
   database("notifications")
     .where({ id: req.params.id })
@@ -80,7 +80,7 @@ route.put("/put-sensor-alert/:id", (req, res) => {
   // return res.status(200).json(req.body);
 });
 
-route.delete("/delete-sensor-alert/:id", (req, res) => {
+route.delete("/notify-delete-sensor-alert/:id", (req, res) => {
   database("notifications")
     .where({ id: req.params.id })
     .delete()
@@ -95,7 +95,7 @@ route.delete("/delete-sensor-alert/:id", (req, res) => {
 });
 
 // Pegar Alertas de Sensores
-route.get("/sensors-alert", (req, res) => {
+route.get("/notify-sensors-alert", (req, res) => {
   database("notifications")
     .then((data) => {
       return res.status(200).json({ data });
@@ -105,7 +105,7 @@ route.get("/sensors-alert", (req, res) => {
     });
 });
 // Pegar Alerta específico
-route.get("/sensor-alert/:id", (req, res) => {
+route.get("/notify-sensor-alert/:id", (req, res) => {
   database("notifications")
     .where({ id: req.params.id })
     .then((data) => {

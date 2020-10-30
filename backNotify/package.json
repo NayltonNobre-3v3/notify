@@ -2,10 +2,10 @@
   "name": "test1",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "notify.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon  --ignore node_modules --exec babel-node src/index.js ",
+    "start": "nodemon  --ignore node_modules --exec babel-node src/notify.js ",
     "knex:migrate": "knex --knexfile knexfile.js migrate:latest"
   },
   "nodemonConfig": {
