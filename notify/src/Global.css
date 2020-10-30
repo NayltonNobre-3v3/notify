@@ -14,6 +14,12 @@ body {
   background: #383838;
   
 }
+@media (max-width: 768px) {
+  html {
+    height: 100vh;
+    width: 100vw;
+  }
+}
 body,
 input,
 button {

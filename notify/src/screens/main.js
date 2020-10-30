@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FaPen, FaTrash } from "react-icons/fa";
 import { AiFillAlert, AiFillFrown } from "react-icons/ai";
-// import api from "../api/api";
+import api from "../api/api";
 import axios from 'axios'
-// import moment from "moment";
-// import { toast, Zoom } from "react-toastify";
+import moment from "moment";
+import { toast, Zoom } from "react-toastify";
 
 
 import "./style.css";
@@ -42,7 +42,7 @@ function Main() {
   // Quando iniciar a aplicação irá carregar todos os valores do banco
   useEffect(() => {
     async function getValues() {
-      const { data } = await axios.get("notify-sensors-alert");
+      const { data } = await api.get("notify-sensors-alert");
       setItems(data.data);
     }
     getValues();
@@ -50,19 +50,19 @@ function Main() {
 
   // Extrai as medições do sensor específico
   async function ListOneSensor(e) {
-    const data = await axios.get(`notify-get-sensors/${e.target.value}`);
+    const data = await api.get(`notify-get-sensors/${e.target.value}`);
     const json = JSON.stringify(data.data);
     const medicao = JSON.parse(json);
-    // const values = Object.values(medicao).map((item) => item.MEASURES);
+
     const values = medicao.map((item) => item.TYPE);
     setMedicao(values);
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
-    // console.log('MEDIÇÃO= ',values)
+
   }
 
   async function ListOneSensorEdit(e) {
-    const data = await axios.get(`notify-get-sensors/${e}`);
+    const data = await api.get(`notify-get-sensors/${e}`);
     const json = JSON.stringify(data.data);
     const medicao = JSON.parse(json);
     const values = medicao.map((item) => item.TYPE);
@@ -85,14 +85,33 @@ function Main() {
       EMAIL: DestSensor,
     };
 
-    axios.post("notify-post-sensor-alert", obj)
+    api.post("notify-post-sensor-alert", obj)
       .then(data => {
         console.log('DATA DO THEN= ', data.data.data)
         setItems(data.data.data)
       })
-
-    // dispatch(Save(obj))
-
+      .then(_=>{
+        toast.success(`Alarme criado com sucesso!`, {
+          position: "top-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .catch(error=>{
+        toast.error("Opa colega, deu error aí", {
+          position: "top-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
   }
   // PUT
   function submitHandlePUT(e) {
@@ -108,7 +127,7 @@ function Main() {
       EMAIL: DestSensor,
     };
     // console.log("OBJ= ", obj);
-    axios.put(`/notify-put-sensor-alert/${IDAlert}`, obj)
+    api.put(`/notify-put-sensor-alert/${IDAlert}`, obj)
     .then(data => {
       console.log('DATA DO THEN= ', data.data.data)
       setItems(data.data.data)
@@ -118,7 +137,7 @@ function Main() {
   // DELETE
   function handleDelete(id) {
     if (window.confirm("Tem certeza que deseja deletar o alarme?")) {
-      axios.delete(`notify-delete-sensor-alert/${id}`)
+      api.delete(`notify-delete-sensor-alert/${id}`)
       .then(data => {
         console.log('DATA DO THEN= ', data.data)
         setItems(data.data.data)
@@ -129,6 +148,7 @@ function Main() {
 
 // Mostrar o Formulário de edição
   function ShowEditForm(data) {
+    console.log('EDIT FORM= ',data)
     ListOneSensorEdit(data.ID_SENSOR);
     setValueSensor(data.VALUE);
     setCondSensor(data.COND);
@@ -200,9 +220,11 @@ function Main() {
                   <label htmlFor="selectUnit">Valor:</label>
                   <input
                     type="number"
+                    min="0"
                     id="ValueInput"
                     value={valueSensor}
                     onChange={(e) => setUnitSensor(e.target.value)}
+                    required
                   />
                 </div>
 
@@ -311,7 +333,8 @@ function Main() {
                   <div className="input-group">
                     <label htmlFor="selectUnit">Valor:</label>
                     <input
-                      type="text"
+                      type="number"
+                      min="0"
                       id="ValueInput"
                       onChange={(e) => setUnitSensor(e.target.value)}
                       value={unitSensor}
@@ -364,6 +387,7 @@ function Main() {
                       type="email"
                       value={DestSensor}
                       placeholder="Selecione o destinatário"
+                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                       disabled={medicao.length === 0 ? true : false}
                       onChange={(e) => setDestSensor(e.target.value)}
                       required
