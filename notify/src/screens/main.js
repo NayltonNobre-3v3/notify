@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FaPen, FaTrash } from "react-icons/fa";
 import { AiFillAlert, AiFillFrown } from "react-icons/ai";
-import api from "../api/api";
+// import api from "../api/api";
+import axios from 'axios'
 // import moment from "moment";
 // import { toast, Zoom } from "react-toastify";
+
 
 import "./style.css";
 
@@ -40,7 +42,7 @@ function Main() {
   // Quando iniciar a aplicação irá carregar todos os valores do banco
   useEffect(() => {
     async function getValues() {
-      const { data } = await api.get("notify-sensors-alert");
+      const { data } = await axios.get("notify-sensors-alert");
       setItems(data.data);
     }
     getValues();
@@ -48,7 +50,7 @@ function Main() {
 
   // Extrai as medições do sensor específico
   async function ListOneSensor(e) {
-    const data = await api.get(`notify-get-sensors/${e.target.value}`);
+    const data = await axios.get(`notify-get-sensors/${e.target.value}`);
     const json = JSON.stringify(data.data);
     const medicao = JSON.parse(json);
     // const values = Object.values(medicao).map((item) => item.MEASURES);
@@ -60,7 +62,7 @@ function Main() {
   }
 
   async function ListOneSensorEdit(e) {
-    const data = await api.get(`notify-get-sensors/${e}`);
+    const data = await axios.get(`notify-get-sensors/${e}`);
     const json = JSON.stringify(data.data);
     const medicao = JSON.parse(json);
     const values = medicao.map((item) => item.TYPE);
@@ -83,7 +85,7 @@ function Main() {
       EMAIL: DestSensor,
     };
 
-    api.post("notify-post-sensor-alert", obj)
+    axios.post("notify-post-sensor-alert", obj)
       .then(data => {
         console.log('DATA DO THEN= ', data.data.data)
         setItems(data.data.data)
@@ -106,7 +108,7 @@ function Main() {
       EMAIL: DestSensor,
     };
     // console.log("OBJ= ", obj);
-    api.put(`/notify-put-sensor-alert/${IDAlert}`, obj)
+    axios.put(`/notify-put-sensor-alert/${IDAlert}`, obj)
     .then(data => {
       console.log('DATA DO THEN= ', data.data.data)
       setItems(data.data.data)
@@ -116,7 +118,7 @@ function Main() {
   // DELETE
   function handleDelete(id) {
     if (window.confirm("Tem certeza que deseja deletar o alarme?")) {
-      api.delete(`notify-delete-sensor-alert/${id}`)
+      axios.delete(`notify-delete-sensor-alert/${id}`)
       .then(data => {
         console.log('DATA DO THEN= ', data.data)
         setItems(data.data.data)
