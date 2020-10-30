@@ -1,5 +1,5 @@
-// const DIR = "/mnt/fcir/sns";
-const DIR = "C:/Users/davi/Downloads/sns";
+const DIR = "/mnt/fcir/sns";
+// const DIR = "C:/Users/davi/Downloads/sns";
 const fs = require("fs-extra");
 const knex = require("../../database/connections");
 const moment=require("moment")
