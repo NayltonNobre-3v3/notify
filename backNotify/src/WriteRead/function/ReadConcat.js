@@ -1,5 +1,5 @@
 // const DIR = "/mnt/fcir/sns";
-const DIR = "C:/Users/davi/Downloads/sns";
+const DIR = "C:/Users/Davis/Downloads/sns";
 const fs = require("fs-extra");
 const knex = require("../../database/connections");
 const moment=require("moment")
@@ -240,13 +240,14 @@ const loop = () => {
 };
 
 
-
+// Lista os arquivos presentes em um diretório
 function listDirFiles(url) {
   return new Promise((fullfill, reject) => {
     fs.readdir(url, (err, data) => (err ? reject(err) : fullfill(data)));
   });
 }
 
+// Leitura dos arquivos
 function readFile(dir) {
   return new Promise((fullfill, reject) => {
     fs.readFile(dir, "latin1", (err, data) =>

@@ -2,19 +2,15 @@ import { createStore, combineReducers, compose, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import {
   SensorListReducer,
-  SensorDetailReducer,
-  SensorDeleteReducer,
-  SensorAlertListReducer,
-  SensorSaveReducer
 } from "../Reducers/SensorListReducer";
 const initialState = {};
 
 const reducer = combineReducers({
   sensorList: SensorListReducer,
-  sensorDetail:SensorDetailReducer,
-  SensorDelete: SensorDeleteReducer,
-  SensorAlertList:SensorAlertListReducer,
-  SensorSave: SensorSaveReducer
+  // sensorDetail:SensorDetailReducer,
+  // SensorDelete: SensorDeleteReducer,
+  // SensorAlertList:SensorAlertListReducer,
+  // SensorSave: SensorSaveReducer
 });
 const composeEnnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

@@ -1,12 +1,8 @@
 // import express from "express";
 const express = require("express");
-// import cors from "cors";
 const cors = require("cors");
-// import bodyParser from "body-parser";
 const bodyParser = require("body-parser");
-// import route from "./routes";
 const route = require("./routes");
-// import getAllSensors from './WriteRead/function/concatTxt.js'
 const getAllSensors = require("./WriteRead/function/ReadConcat");
 
 const path = require("path");

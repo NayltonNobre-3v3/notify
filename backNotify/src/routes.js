@@ -1,23 +1,13 @@
-// import { Router } from "express";
-// const Router=require("express")
-// import database from "../src/database/connections";
+const express = require("express")
+const database = require("../src/database/connections")
 
-const express=require("express")
-const database=require("../src/database/connections")
 
-// const route = Router();
 const route = express.Router();
-
-// import createAPI from "./monitoring/MonitoringSNS"
-const createAPI=require("./monitoring/MonitoringSNS") 
-
-const api=require("../src/variables_api/monitoring-variables")
+const api = require("../src/variables_api/monitoring-variables")
 
 route.get("/get-sensor-monitoring/:id", (req, res) => {
-  // const file = require("C:/Users/davi/Downloads/files.json");
-  // const data=api.sensorMonitoring.map(e=>e.ID===req.params.id)
-  let data=[]
-  api.sensorMonitoring.map(e=>{
+  let data = []
+  api.sensorMonitoring.map(e => {
     data.push(JSON.parse(e))
   })
   const filter = data.filter((e) => e.ID === Number(req.params.id));
@@ -25,9 +15,8 @@ route.get("/get-sensor-monitoring/:id", (req, res) => {
   return res.status(200).json(filter);
 });
 route.get("/get-sensor-monitoring", (req, res) => {
-  // console.log("API= ",api.sensorMonitoring)
-  let data=[]
-  api.sensorMonitoring.map(e=>{
+  let data = []
+  api.sensorMonitoring.map(e => {
     data.push(JSON.parse(e))
   })
   return res.status(200).json(data);
@@ -51,13 +40,14 @@ route.post("/post-sensor-alert", async (req, res) => {
         })
         .then((data) => {
           console.log(data);
+          database("notifications")
+            .then(data => res.status(200).json({ data }))
+            .catch(err => res.status(400).json({ "message": "Error" }))
         })
         .catch((error) => {
           console.log(error);
           throw "Não foi possível cadastrar no banco";
         });
-
-      return res.status(200).json(req.body);
     } else {
       throw "Valor que está querendo inserir já existe no banco";
     }
@@ -80,7 +70,9 @@ route.put("/put-sensor-alert/:id", (req, res) => {
       POSITION,
     })
     .then((data) => {
-      console.log(data);
+      database("notifications")
+      .then(data => res.status(200).json({ data }))
+      .catch(err => res.status(400).json({ "message": "Error" }))
     })
     .catch((error) => {
       console.log(error);
@@ -93,16 +85,16 @@ route.delete("/delete-sensor-alert/:id", (req, res) => {
     .where({ id: req.params.id })
     .delete()
     .then((data) => {
-      console.log(data);
+      database("notifications")
+      .then(data => res.status(200).json({ data }))
+      .catch(err => res.status(400).json({ "message": "Error" }))
     })
     .catch((err) => {
       console.log(err);
     });
-  return res
-    .status(200)
-    .json({ data: `Alerta com ID = ${req.params.id} deletado com sucesso` });
 });
 
+// Pegar Alertas de Sensores
 route.get("/sensors-alert", (req, res) => {
   database("notifications")
     .then((data) => {
@@ -112,7 +104,7 @@ route.get("/sensors-alert", (req, res) => {
       return res.status(200).json({ err });
     });
 });
-
+// Pegar Alerta específico
 route.get("/sensor-alert/:id", (req, res) => {
   database("notifications")
     .where({ id: req.params.id })
@@ -124,10 +116,4 @@ route.get("/sensor-alert/:id", (req, res) => {
     });
 });
 
-
-// Irá monitorar os sensores
-// createAPI();
-
-
-// export default route;
-module.exports= route;
+module.exports = route;
