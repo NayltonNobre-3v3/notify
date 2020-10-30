@@ -6,8 +6,8 @@ var knex = require('knex')({
   connection: {
     host : 'localhost',
     user : 'root',
-    password : '1234',
-    database : 'test'
+    password : '123v312',
+    database : 'newsir'
   },
 
   useNullAsDefault: true
