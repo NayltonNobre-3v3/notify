@@ -69,7 +69,7 @@ route.put("/put-sensor-alert/:id", (req, res) => {
       COND,
       POSITION,
     })
-    .then((data) => {
+    .then(_ => {
       database("notifications")
       .then(data => res.status(200).json({ data }))
       .catch(err => res.status(400).json({ "message": "Error" }))
@@ -77,7 +77,7 @@ route.put("/put-sensor-alert/:id", (req, res) => {
     .catch((error) => {
       console.log(error);
     });
-  return res.status(200).json(req.body);
+  // return res.status(200).json(req.body);
 });
 
 route.delete("/delete-sensor-alert/:id", (req, res) => {

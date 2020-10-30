@@ -147,7 +147,7 @@ function Main() {
     setDestSensor("");
     setShowEdit(false);
   }
-
+  console.log('ESTOU IMPRIMINDO= ',valueSensor)
   return (
     <div className="container">
       <main>
@@ -194,11 +194,10 @@ function Main() {
                     )}
                   </select>
                 </div>
-
                 <div className="input-group">
                   <label htmlFor="selectUnit">Valor:</label>
                   <input
-                    type="text"
+                    type="number"
                     id="ValueInput"
                     value={valueSensor}
                     onChange={(e) => setUnitSensor(e.target.value)}
