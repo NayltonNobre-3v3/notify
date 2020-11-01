@@ -8,6 +8,7 @@ const hbs = require("nodemailer-express-handlebars");
 
 const transport = nodemailer.createTransport({
   service,
+  secure: true,
   auth: { user, pass },
 });
 

@@ -4,8 +4,8 @@ module.exports = {
   connection: {
     host: "localhost",
     user: "root",
-    password: "123v312",
-    database: "newsir",
+    password: "1234",
+    database: "test",
   },
   migrations: {
     directory: path.resolve(__dirname, "src", "database", "migrations"),

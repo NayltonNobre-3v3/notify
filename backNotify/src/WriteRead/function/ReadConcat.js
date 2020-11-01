@@ -1,11 +1,11 @@
-const DIR = "/mnt/fcir/sns";
-// const DIR = "C:/Users/davi/Downloads/sns";
+// const DIR = "/mnt/fcir/sns";
+const DIR = "C:/Users/Davis/Documents/sns";
 const fs = require("fs-extra");
 const knex = require("../../database/connections");
-const moment=require("moment")
-const mailer=require("../../modules/nodemail")
+const moment = require("moment")
+const mailer = require("../../modules/nodemail")
 let sensors_monit = [];
-const api=require("../../variables_api/monitoring-variables")
+const api = require("../../variables_api/monitoring-variables")
 
 let off_range_sensors = [];
 let current_date = Date.now();
@@ -13,15 +13,19 @@ let current_date = Date.now();
 const loop = () => {
   setTimeout(() => {
     listDirFiles(DIR)
-      .then((arr) =>Promise.all(arr.map((item) => readFile(`${DIR}/${item}`))))
+      .then((arr) => Promise.all(arr.map((item) => readFile(`${DIR}/${item}`))))
       .then((arr) => {
-       arr.map(e=>{
-         sensors_monit.push(JSON.parse(e))
-       })
-       return arr
+        let data=arr.map(e=>JSON.parse(e))
+        return data
+
       })
-      .then(arr=>api.sensorMonitoring=arr)
+      .then(arr =>{ 
+        // console.log(' sensors_monit= ',arr)
+        api.sensorMonitoring = arr
+        sensors_monit=arr
+      })
       .then((_) => {
+        
         knex("notifications")
           // PEGO DO BANCO
           .then((ndata) => {
@@ -29,28 +33,33 @@ const loop = () => {
             ndata.map((banco) => {
               // MAP DO JSON
               sensors_monit.map((json) => {
-                // console.log('API SENSOR= ',json)
                 current_date = Date.now();
                 // SE O ID QUE ESTIVER NO BANCO FOR IGUAL AO ID DO JSON QUE ESTOU PERCORRENDO
                 if (json.ID === banco.ID_SENSOR) {
                   if (banco.COND === "ACIMA") {
                     
+                    
+                    // console.log('API SENSOR= ',json)
                     if (json.VALUE[banco.POSITION] > banco.VALUE) {
                       
+
                       // Verificar se existe ou nÃ£o os valores no array
                       const include = off_range_sensors.findIndex((off_range) => {
                         return (
                           off_range.ID === json.ID &&
-                          off_range.COND === banco.COND
+                          off_range.COND === banco.COND && 
+                          off_range.VALUE === banco.VALUE
+                          
                         );
                       });
                       // Se nÃ£o existir no array
                       if (include < 0) {
-                        off_range_sensors.push(...off_range_sensors, {
+                        off_range_sensors.push({
                           ID: json.ID,
                           COND: banco.COND,
                           email: false,
                           time: current_date,
+                          VALUE:banco.VALUE
                         });
                       }
                       // Se existir e nÃ£o tive enviado o email entÃ£o calculo o tempo
@@ -61,25 +70,25 @@ const loop = () => {
                         // Pego o meu horÃ¡rio atual e subtraio com o horÃ¡rio que estaÂ´no array
                         const repeatItem = off_range_sensors.findIndex(
                           (repeat) =>
-                            repeat.ID === json.ID && repeat.COND === banco.COND
+                            repeat.ID === json.ID && repeat.COND === banco.COND && repeat.VALUE === banco.VALUE
                         );
                         let variacao =
                           moment(current_date).unix() -
                           moment(off_range_sensors[repeatItem].time).unix();
                         // Se estiver acima do valor que estÃ¡ no banco
-                        console.log('VARIAÇÃO= ',variacao)
+                        // console.log('VARIAÇÃO= ', variacao)
                         if (variacao > banco.TIME) {
                           // Mudar a variÃ¡vel email para true
                           // Se nÃ£o tiver enviado o email
+                          // console.log('OFF RANGE SENSOR= ',(off_range_sensors))
                           if (off_range_sensors[repeatItem].email === false) {
                             // Envio o email
                             // Marco que enviei o email
                             // console.log('JSON= ',json.NAME)
-                              // console.log('OFF RANGE SENSOR= ',(off_range_sensors))
                             mailer.sendMail(
                               {
                                 from: "sir3v3@gmail.com",
-                                to:"davispenha@gmail.com",
+                                to: "davispenha@gmail.com",
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
@@ -116,7 +125,8 @@ const loop = () => {
                       const include = off_range_sensors.findIndex((off_range) => {
                         return (
                           off_range.ID === json.ID &&
-                          off_range.COND === banco.COND
+                          off_range.COND === banco.COND && 
+                          off_range.VALUE === banco.VALUE
                         );
                       });
                       // Se tiver encontrado algum item repetido entÃ£o tirarÃ¡ do array
@@ -128,45 +138,55 @@ const loop = () => {
                         off_range_sensors = filteredItems;
                         // console.log(off_range_sensors)
                       }
+                      return
                     }
                   }
                   // Se a condiÃ§Ã£o for ABAIXO
                   if (banco.COND === "ABAIXO") {
                     if (json.VALUE[banco.POSITION] < banco.VALUE) {
+                      // console.log('SENSOR MONIT= ',sensors_monit.length)
                       // Verificar se tem o mesmo ID e se a condiÃ§Ã£o Ã© a mesma
                       const include = off_range_sensors.findIndex((off_range) => {
                         // Vai procurar se no array em que registro os alertas que irÃ£o ser
                         // verificados se tem algum que tenha o mesmo ID e mesma condiÃ§Ã£i
                         return (
                           off_range.ID === json.ID &&
-                          off_range.COND === banco.COND
+                          off_range.COND === banco.COND && 
+                          off_range.VALUE === banco.VALUE
                         );
                       });
-                      // Se nÃ£o existir no array
+                      // Se o valor que está no banco não estiver no array então eu cadastro no array
                       if (include < 0) {
-                        off_range_sensors.push(...off_range_sensors, {
+                        off_range_sensors.push({
                           ID: json.ID,
                           COND: banco.COND,
                           email: false,
                           time: current_date,
+                          VALUE:banco.VALUE
                         });
                       }
-                      // Se existir eu calculo o tempo que pessaou
-                      else {
-                        // Pego o meu horÃ¡rio atual e subtraio com o horÃ¡rio que estaÂ´no array
+                      // Se o valor que está no banco já existir no arra e não estiver enviado o email
+                      else if (include >= 0 && off_range_sensors[include].email === false) {
+                        // Verifico se no array tem o elemento com o mesmo ID  do json e mesma condição do BANCO
+                        // para evitar repetição
                         const repeatItem = off_range_sensors.findIndex(
                           (repeat) => {
                             return (
-                              repeat.ID === json.ID && repeat.COND === banco.COND
+                              // Evitar que calcule o tempo dos sensores com mesmo ID 
+                              repeat.ID === json.ID && repeat.COND === banco.COND && repeat.VALUE === banco.VALUE
+                              );
+                            }
                             );
-                          }
-                        );
-                        let variacao =
-                          moment(current_date).unix() -
-                          moment(off_range_sensors[repeatItem].time).unix();
-                        // console.log(moment.unix(variacao).format("mm:ss"));
-                        // Se estiver acima do valor que estÃ¡ no banco
-                        if (variacao > banco.TIME) {
+                            
+                            // Pego o meu horÃ¡rio atual e subtraio com o horÃ¡rio que estaÂ´no array
+                            let variacao =
+                            moment(current_date).unix() -
+                            moment(off_range_sensors[repeatItem].time).unix();
+                            // console.log(moment.unix(variacao).format("mm:ss"));
+                            // Se estiver acima do valor que estÃ¡ no banco
+                            
+                            // console.log('off_range_sensors ',variacao,' ',off_range_sensors,'\n')
+                        if (variacao >= banco.TIME) {
                           // Mudar a variÃ¡vel email para true
                           // Se nÃ£o tiver enviado o email
                           if (off_range_sensors[repeatItem].email === false) {
@@ -175,7 +195,7 @@ const loop = () => {
                             mailer.sendMail(
                               {
                                 from: "sir3v3@gmail.com",
-                                to:"davispenha@gmail.com",
+                                to: "davispenha@gmail.com",
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
@@ -212,17 +232,19 @@ const loop = () => {
                       const include = off_range_sensors.findIndex((off_range) => {
                         return (
                           off_range.ID === json.ID &&
-                          off_range.COND === banco.COND
+                          off_range.COND === banco.COND && 
+                          off_range.VALUE === banco.VALUE
                         );
                       });
                       // Se tiver encontrado algum item repetido entÃ£o tirarÃ¡ do array
                       if (include >= 0) {
                         // Tiro do array off_range_sensors
-                        const filteredItems = off_range_sensors.filter((item) => {
+                        let filteredItems = off_range_sensors.filter((item) => {
                           return item.ID !== off_range_sensors[include].ID;
                         });
                         off_range_sensors = filteredItems;
                       }
+                      return
                     }
                   }
                 }
@@ -233,11 +255,11 @@ const loop = () => {
             console.log(err);
           });
 
-        
+
       })
       .catch((err) => console.log(err))
       .then(() => loop());
-  }, 3000);
+  }, 2000);
 };
 
 
@@ -258,4 +280,4 @@ function readFile(dir) {
 }
 
 
-module.exports=loop
+module.exports = loop

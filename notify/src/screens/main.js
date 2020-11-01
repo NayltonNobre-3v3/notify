@@ -10,7 +10,7 @@ import { toast, Zoom } from "react-toastify";
 import "./style.css";
 
 import { useSelector, useDispatch } from "react-redux";
-import { listSensor} from "../Actions/SensorListActions";
+import { listSensor } from "../Actions/SensorListActions";
 
 function Main() {
   const [medicao, setMedicao] = useState([]);
@@ -20,11 +20,14 @@ function Main() {
 
   const [idSensor, setIdSensor] = useState(0);
   const [nameSensor, setNameSensor] = useState("");
-  const [valueSensor, setValueSensor] = useState("");
+  const [valueSensor, setValueSensor] = useState(0);
+  const [PositionSensor, setPositionSensor] = useState(0);
   const [unitSensor, setUnitSensor] = useState("");
   const [condSensor, setCondSensor] = useState("");
   const [TimeSensor, setTimeSensor] = useState(0);
   const [DestSensor, setDestSensor] = useState("");
+  const [NameUnit, setNameUnit] = useState("");
+
 
   // Pego a o meu estado
   const SensorList = useSelector((state) => state.sensorList);
@@ -58,6 +61,8 @@ function Main() {
     setMedicao(values);
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
+    setNameUnit(data.data[0].UNIT)
+    console.log('NAME UNIT ', NameUnit)
 
   }
 
@@ -69,6 +74,8 @@ function Main() {
     setMedicao(values);
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
+    setNameUnit(data.data[0].UNIT)
+    console.log('NAME UNIT ', NameUnit)
   }
 
   // POST
@@ -77,20 +84,20 @@ function Main() {
 
     let obj = {
       ID_SENSOR: idSensor,
-      VALUE: Number(unitSensor),
+      VALUE: Number(valueSensor),
       NAME: nameSensor,
-      POSITION: Number(valueSensor),
+      POSITION: Number(PositionSensor),
+      UNIT: unitSensor,
       COND: condSensor,
       TIME: Number(TimeSensor),
       EMAIL: DestSensor,
     };
-
+    // console.log('SUBMIT= ',obj)
     api.post("notify-post-sensor-alert", obj)
       .then(data => {
-        console.log('DATA DO THEN= ', data.data.data)
         setItems(data.data.data)
       })
-      .then(_=>{
+      .then(_ => {
         toast.success(`Alarme criado com sucesso!`, {
           position: "top-left",
           autoClose: 5000,
@@ -100,8 +107,18 @@ function Main() {
           draggable: true,
           progress: undefined,
         });
+        setMedicao([]);
+        setIdSensor(0);
+        setNameSensor("");
+        setValueSensor(0);
+        setUnitSensor("");
+        setCondSensor("0");
+        setTimeSensor(0);
+        setPositionSensor(0);
+        setDestSensor("");
+        setShowEdit(false);
       })
-      .catch(error=>{
+      .catch(error => {
         toast.error("Opa colega, deu error aí", {
           position: "top-left",
           autoClose: 5000,
@@ -119,57 +136,82 @@ function Main() {
 
     let obj = {
       ID_SENSOR: idSensor,
-      VALUE: Number(unitSensor),
+      VALUE: Number(valueSensor),
       NAME: nameSensor,
-      POSITION: Number(valueSensor),
+      POSITION: Number(PositionSensor),
+      UNIT: unitSensor,
       COND: condSensor,
       TIME: Number(TimeSensor),
       EMAIL: DestSensor,
     };
-    // console.log("OBJ= ", obj);
+    // console.log('ESTOU ATUALIZANDO= ', obj)
     api.put(`/notify-put-sensor-alert/${IDAlert}`, obj)
-    .then(data => {
-      console.log('DATA DO THEN= ', data.data.data)
-      setItems(data.data.data)
-    })
-    
+      .then(data =>{
+        console.log("ATUALIZADO= ",data.data.data)
+        return setItems(data.data.data)
+      })
+      .then(_ => {
+        setMedicao([]);
+        setIdSensor(0);
+        setNameSensor("");
+        setValueSensor(0);
+        setUnitSensor("");
+        setCondSensor("0");
+        setTimeSensor(0);
+        // setPositionSensor(0);
+        setDestSensor("");
+        setShowEdit(false);
+      })
+
   }
   // DELETE
   function handleDelete(id) {
     if (window.confirm("Tem certeza que deseja deletar o alarme?")) {
       api.delete(`notify-delete-sensor-alert/${id}`)
-      .then(data => {
-        console.log('DATA DO THEN= ', data.data)
-        setItems(data.data.data)
-      })
+        .then(data => {
+          setItems(data.data.data)
+        })
     }
     // setItems(local);
   }
 
-// Mostrar o Formulário de edição
+  // Mostrar o Formulário de edição
   function ShowEditForm(data) {
-    console.log('EDIT FORM= ',data)
+    setMedicao([]);
+    setIdSensor(0);
+    setNameSensor("");
+    setValueSensor(0);
+    setUnitSensor("");
+    setCondSensor("0");
+    setTimeSensor(0);
+    setPositionSensor(0);
+    setDestSensor("");
+    setShowEdit(true);
+
     ListOneSensorEdit(data.ID_SENSOR);
+    setNameSensor(data.NAME)
     setValueSensor(data.VALUE);
     setCondSensor(data.COND);
-    setTimeSensor(data.TIME);
+    // setUnitSensor(data.UNIT);
+    setTimeSensor(data.TIME / 60);
     setIDAlert(data.ID);
     setDestSensor(data.EMAIL);
-    setShowEdit(true);
+    setUnitSensor(data.UNIT)
   }
   // Ocultar o Formulário de edição
   function hideEditForm() {
     setMedicao([]);
     setIdSensor(0);
     setNameSensor("");
-    setValueSensor("");
+    setValueSensor(0);
     setUnitSensor("");
     setCondSensor("0");
     setTimeSensor(0);
+    setPositionSensor(0);
     setDestSensor("");
     setShowEdit(false);
   }
-  console.log('ESTOU IMPRIMINDO= ',valueSensor)
+  // console.log('valueSensor= ',valueSensor)
   return (
     <div className="container">
       <main>
@@ -181,35 +223,24 @@ function Main() {
                 <br />
                 <div className="input-group">
                   <label htmlFor="selectModel">Nome do sensor:</label>
-                  <select
-                    id="selectModel"
-                    onChange={ListOneSensor}
-                    required
-                    title="Nome do sensor"
-                    value={nameSensor}
-                  >
-                    <option value={idSensor}>{nameSensor}</option>
-
-                    {sensors.map((e, i) => (
-                      <option value={e.ID} key={i}>
-                        {e.NAME}
-                      </option>
-                    ))}
-                  </select>
+                  <input type="text" value={nameSensor} disabled></input>
                 </div>
 
                 <div className="input-group">
                   <label htmlFor="selectMeasures">Medição:</label>
                   <select
                     id="selectMeasures"
-                    onChange={(e) => setValueSensor(e.target.value)}
+                    onChange={(e) => {
+                      setPositionSensor(e.target.selectedIndex)
+                      console.log('SELECT ', PositionSensor, ' ', NameUnit[PositionSensor])
+                      setUnitSensor(e.target.selectedOptions[0].id)
+                    }}
                     title="Medida do sensor"
                     required
-                  // value={}
                   >
                     {medicao.map((item) =>
                       item.map((e, i) => (
-                        <option value={`${i}`} key={i} data={e.UNIT}>
+                        <option value={i} key={i} data={e.UNIT} id={NameUnit[i]} >
                           {e}
                         </option>
                       ))
@@ -217,13 +248,13 @@ function Main() {
                   </select>
                 </div>
                 <div className="input-group">
-                  <label htmlFor="selectUnit">Valor:</label>
+                  <label htmlFor="selectUnit">Valor:  {NameUnit[PositionSensor]}</label>
                   <input
                     type="number"
-                    min="0"
+                    min={0}
                     id="ValueInput"
                     value={valueSensor}
-                    onChange={(e) => setUnitSensor(e.target.value)}
+                    onChange={(e) => setValueSensor(e.target.value)}
                     required
                   />
                 </div>
@@ -311,18 +342,21 @@ function Main() {
                     <select
                       id="selectMeasures"
                       disabled={medicao.length === 0 ? true : false}
-                      onChange={(e) => setValueSensor(e.target.value)}
+                      onChange={(e) => {
+                        setPositionSensor(e.target.value)
+                        setUnitSensor(e.target.selectedOptions[0].id)
+                      }}
+                      defaultValue="1"
                       title="Medida do sensor"
-                      // defaultValue={nameSensor?"1":condSensor}
                       required
                     >
                       <option value="1" disabled>
-                        {/* {console.log(nameSensor ===0?'EXISTE':'VAZIO' )} */}
-                      Selecione
+                        Selecione
                     </option>
                       {medicao.map((item) =>
                         item.map((e, i) => (
-                          <option value={`${i}`} key={i}>
+                          <option value={`${i}`} key={i} id={NameUnit[i]} >
+                            {/* {console.log("UNIDATES= ",NameUnit[i],' ',i)} */}
                             {e}
                           </option>
                         ))
@@ -331,13 +365,13 @@ function Main() {
                   </div>
 
                   <div className="input-group">
-                    <label htmlFor="selectUnit">Valor:</label>
+                    <label htmlFor="selectUnit">Valor: {unitSensor}</label>
                     <input
                       type="number"
-                      min="0"
+                      min={0}
                       id="ValueInput"
-                      onChange={(e) => setUnitSensor(e.target.value)}
-                      value={unitSensor}
+                      onChange={(e) => setValueSensor(e.target.value)}
+                      value={valueSensor}
                       disabled={medicao.length === 0 ? true : false}
                     />
                   </div>

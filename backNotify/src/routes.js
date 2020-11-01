@@ -8,7 +8,7 @@ const api = require("../src/variables_api/monitoring-variables")
 route.get("/notify-get-sensors/:id", (req, res) => {
   let data = []
   api.sensorMonitoring.map(e => {
-    data.push(JSON.parse(e))
+    data.push(e)
   })
   const filter = data.filter((e) => e.ID === Number(req.params.id));
 
@@ -16,16 +16,22 @@ route.get("/notify-get-sensors/:id", (req, res) => {
 });
 route.get("/notify-get-sensors", (req, res) => {
   let data = []
-  api.sensorMonitoring.map(e => {
-    data.push(JSON.parse(e))
-  })
+  if(api.sensorMonitoring.length>0){
+    api.sensorMonitoring.map(e => {
+      data.push(e)
+    })
+  }
+  else{
+    data=[]
+  }
   return res.status(200).json(data);
 });
 route.post("/notify-post-sensor-alert", async (req, res) => {
-  const { TIME, VALUE, NAME, ID_SENSOR, EMAIL, COND, POSITION } = req.body;
+  const { TIME, VALUE, NAME,UNIT, ID_SENSOR, EMAIL, COND, POSITION } = req.body;
   const duplicate = await database("notifications")
     .where("ID_SENSOR", ID_SENSOR)
-    .andWhere("COND", COND);
+    .andWhere("COND", COND)
+    .andWhere("VALUE",VALUE);
   try {
     if (!duplicate.length) {
       database("notifications")
@@ -33,6 +39,7 @@ route.post("/notify-post-sensor-alert", async (req, res) => {
           TIME: TIME * 60,
           VALUE,
           NAME,
+          UNIT,
           ID_SENSOR,
           EMAIL,
           COND,
@@ -57,12 +64,13 @@ route.post("/notify-post-sensor-alert", async (req, res) => {
 });
 
 route.put("/notify-put-sensor-alert/:id", (req, res) => {
-  const { TIME, VALUE, NAME, ID_SENSOR, EMAIL, COND, POSITION } = req.body;
+  const { TIME, VALUE, NAME,UNIT, ID_SENSOR, EMAIL, COND, POSITION } = req.body;
   database("notifications")
     .where({ id: req.params.id })
     .update({
-      TIME,
+      TIME: TIME * 60,
       VALUE,
+      UNIT,
       NAME,
       ID_SENSOR,
       EMAIL,
