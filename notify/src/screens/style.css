@@ -218,9 +218,10 @@ select {
   color: rgb(59, 59, 59);
 }
 .date-detail {
-  width: 300px;
+  max-width: 535px;
+  width: 535px;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
   color: rgb(102, 101, 101);
 }
 

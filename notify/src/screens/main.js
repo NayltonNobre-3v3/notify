@@ -4,7 +4,7 @@ import { AiFillAlert, AiFillFrown } from "react-icons/ai";
 import api from "../api/api";
 import axios from 'axios'
 import moment from "moment";
-import { toast, Zoom } from "react-toastify";
+import { toast} from "react-toastify";
 
 
 import "./style.css";
@@ -62,7 +62,8 @@ function Main() {
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
     setNameUnit(data.data[0].UNIT)
-    console.log('NAME UNIT ', NameUnit)
+    setUnitSensor('1')
+
 
   }
 
@@ -75,7 +76,6 @@ function Main() {
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
     setNameUnit(data.data[0].UNIT)
-    console.log('NAME UNIT ', NameUnit)
   }
 
   // POST
@@ -92,7 +92,6 @@ function Main() {
       TIME: Number(TimeSensor),
       EMAIL: DestSensor,
     };
-    // console.log('SUBMIT= ',obj)
     api.post("notify-post-sensor-alert", obj)
       .then(data => {
         setItems(data.data.data)
@@ -100,10 +99,10 @@ function Main() {
       .then(_ => {
         toast.success(`Alarme criado com sucesso!`, {
           position: "top-left",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
-          pauseOnHover: true,
+          pauseOnHover: false,
           draggable: true,
           progress: undefined,
         });
@@ -112,7 +111,7 @@ function Main() {
         setNameSensor("");
         setValueSensor(0);
         setUnitSensor("");
-        setCondSensor("0");
+        setCondSensor("");
         setTimeSensor(0);
         setPositionSensor(0);
         setDestSensor("");
@@ -121,10 +120,10 @@ function Main() {
       .catch(error => {
         toast.error("Opa colega, deu error aí", {
           position: "top-left",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
-          pauseOnHover: true,
+          pauseOnHover: false,
           draggable: true,
           progress: undefined,
         });
@@ -144,10 +143,9 @@ function Main() {
       TIME: Number(TimeSensor),
       EMAIL: DestSensor,
     };
-    // console.log('ESTOU ATUALIZANDO= ', obj)
+
     api.put(`/notify-put-sensor-alert/${IDAlert}`, obj)
       .then(data =>{
-        console.log("ATUALIZADO= ",data.data.data)
         return setItems(data.data.data)
       })
       .then(_ => {
@@ -184,19 +182,20 @@ function Main() {
     setUnitSensor("");
     setCondSensor("0");
     setTimeSensor(0);
-    setPositionSensor(0);
+    setPositionSensor('');
     setDestSensor("");
     setShowEdit(true);
+
 
     ListOneSensorEdit(data.ID_SENSOR);
     setNameSensor(data.NAME)
     setValueSensor(data.VALUE);
     setCondSensor(data.COND);
-    // setUnitSensor(data.UNIT);
     setTimeSensor(data.TIME / 60);
     setIDAlert(data.ID);
     setDestSensor(data.EMAIL);
     setUnitSensor(data.UNIT)
+    setPositionSensor(data.POSITION);
   }
   // Ocultar o Formulário de edição
   function hideEditForm() {
@@ -211,7 +210,7 @@ function Main() {
     setDestSensor("");
     setShowEdit(false);
   }
-  // console.log('valueSensor= ',valueSensor)
+
   return (
     <div className="container">
       <main>
@@ -232,12 +231,12 @@ function Main() {
                     id="selectMeasures"
                     onChange={(e) => {
                       setPositionSensor(e.target.selectedIndex)
-                      console.log('SELECT ', PositionSensor, ' ', NameUnit[PositionSensor])
                       setUnitSensor(e.target.selectedOptions[0].id)
                     }}
+                    value={ PositionSensor>0?PositionSensor-1:0}
                     title="Medida do sensor"
                     required
-                  >
+                    >
                     {medicao.map((item) =>
                       item.map((e, i) => (
                         <option value={i} key={i} data={e.UNIT} id={NameUnit[i]} >
@@ -251,7 +250,7 @@ function Main() {
                   <label htmlFor="selectUnit">Valor:  {NameUnit[PositionSensor]}</label>
                   <input
                     type="number"
-                    min={0}
+                    // min={0}
                     id="ValueInput"
                     value={valueSensor}
                     onChange={(e) => setValueSensor(e.target.value)}
@@ -346,7 +345,7 @@ function Main() {
                         setPositionSensor(e.target.value)
                         setUnitSensor(e.target.selectedOptions[0].id)
                       }}
-                      defaultValue="1"
+                      value={unitSensor}
                       title="Medida do sensor"
                       required
                     >
@@ -356,7 +355,6 @@ function Main() {
                       {medicao.map((item) =>
                         item.map((e, i) => (
                           <option value={`${i}`} key={i} id={NameUnit[i]} >
-                            {/* {console.log("UNIDATES= ",NameUnit[i],' ',i)} */}
                             {e}
                           </option>
                         ))
@@ -365,7 +363,7 @@ function Main() {
                   </div>
 
                   <div className="input-group">
-                    <label htmlFor="selectUnit">Valor: {unitSensor}</label>
+                    <label htmlFor="selectUnit">Valor: {unitSensor==='1'?'':unitSensor}</label>
                     <input
                       type="number"
                       min={0}
@@ -384,7 +382,7 @@ function Main() {
                         setCondSensor(e.target.value);
                       }}
                       title="Condição para alarmar"
-                      defaultValue={!condSensor ? "0" : condSensor}
+                      value={!condSensor ? "0" : condSensor}
                       required
                     >
                       <option value="0" disabled>
@@ -450,13 +448,13 @@ function Main() {
                   </div>
                   <div className="content-card">
                     <p>
-                      Condição: {e.COND} de {e.VALUE} {e.MEDITION}
+                      Condição: {e.COND.toLowerCase()} de {e.VALUE} {e.UNIT} {e.MEDITION}
                     </p>
                     <p>Tempo para enviar alerta: {e.TIME / 60} min</p>
                   </div>
                   <div id="footer-Container">
                     <p className="date-detail">
-                      Alerta criado em {e.created_at}
+                      Alerta criado em {moment(e.created_at).locale('pt-br').format('LLL')}
                     </p>
 
                     <div id="buttons-Container">
