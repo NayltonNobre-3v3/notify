@@ -83,7 +83,7 @@ input:-webkit-autofill:active {
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: #f5f5f5;
+  background-color: #f1f1f1;
   border: solid 2px #ebebeb;
   border-radius: 10px;
 

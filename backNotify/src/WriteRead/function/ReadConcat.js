@@ -1,5 +1,5 @@
 const DIR = "/mnt/fcir/sns";
-// const DIR = "C:/Users/davi/Downloads/sns";
+// const DIR = "C:/Users/Davis/Documents/sns";
 const fs = require("fs-extra");
 const knex = require("../../database/connections");
 const moment = require("moment")
@@ -88,19 +88,18 @@ const loop = () => {
                             mailer.sendMail(
                               {
                                 from: "sir3v3@gmail.com",
-                                to: banco.EMAIL,
+                                to: "davispenha@gmail.com",
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
                                   sensorName: json.NAME,
                                   cond: banco.COND,
                                   value: banco.VALUE,
+                                  unit:banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).format("LLLL"),
-                                  end: moment(moment(current_date)).format(
-                                    "LLLL"
-                                  ),
+                                  ).format('MM/DD/YYYY  h:mm:ss'),
+                                  end: moment(moment(current_date)).format('MM/DD/YYYY  h:mm:ss'),
                                 },
                               },
                               (err) => {
@@ -195,19 +194,18 @@ const loop = () => {
                             mailer.sendMail(
                               {
                                 from: "sir3v3@gmail.com",
-                                to:banco.EMAIL,
+                                to: "davispenha@gmail.com",
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
                                   sensorName: json.NAME,
                                   cond: banco.COND,
                                   value: banco.VALUE,
+                                  unit:banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).format("LLLL"),
-                                  end: moment(moment(current_date)).format(
-                                    "LLLL"
-                                  ),
+                                  ).format('MM/DD/YYYY  h:mm:ss'),
+                                  end: moment(moment(current_date)).format('MM/DD/YYYY  h:mm:ss'),
                                 },
                               },
                               (err) => {
