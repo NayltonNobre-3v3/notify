@@ -3,8 +3,10 @@ import { FaPen, FaTrash } from "react-icons/fa";
 import { AiFillAlert, AiFillFrown } from "react-icons/ai";
 // import api from "../api/api";
 import axios from 'axios'
-import moment from "moment";
+// import moment from "moment";
 import { toast} from "react-toastify";
+import * as moment from 'moment-timezone';
+
 
 
 import "./style.css";
@@ -17,7 +19,7 @@ function Main() {
   const [local, setItems] = useState([]);
   const [ShowEdit, setShowEdit] = useState(false);
   const [IDAlert, setIDAlert] = useState(0);
-
+  const timezone = "America/Fortaleza";
   const [idSensor, setIdSensor] = useState(0);
   const [nameSensor, setNameSensor] = useState("");
   const [valueSensor, setValueSensor] = useState(0);
@@ -92,7 +94,7 @@ function Main() {
       TIME: Number(TimeSensor),
       EMAIL: DestSensor,
     };
-    console.log('OBJ ',obj)
+    // console.log('OBJ ',obj)
     axios.post("notify-post-sensor-alert", obj)
       .then(data => {
         setItems(data.data.data)
@@ -414,8 +416,8 @@ function Main() {
                     <input
                       id="selectTime"
                       type="number"
-                      value={TimeSensor}
                       placeholder="Selecione o tempo"
+                      value={TimeSensor}
                       min={0}
                       max={59}
                       disabled={medicao.length === 0 ? true : false}
@@ -468,7 +470,8 @@ function Main() {
                   </div>
                   <div id="footer-Container">
                     <p className="date-detail">
-                      Alerta criado em {moment(e.created_at).locale('pt-br').format('MM/DD/YYYY  h:mm:ss')}
+
+                      Alerta criado em {moment.tz(e.created_at,'America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss').toLocaleLowerCase('pt-br')}
                     </p>
 
                     <div id="buttons-Container">

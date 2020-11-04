@@ -1,15 +1,15 @@
-const DIR = "/mnt/fcir/sns";
-// const DIR = "C:/Users/Davis/Documents/sns";
+// const DIR = "/mnt/fcir/sns";
+const DIR = "C:/Users/davi/Downloads/sns";
 const fs = require("fs-extra");
 const knex = require("../../database/connections");
-const moment = require("moment")
+// const moment = require("moment;")
 const mailer = require("../../modules/nodemail")
 let sensors_monit = [];
 const api = require("../../variables_api/monitoring-variables")
 
 let off_range_sensors = [];
 let current_date = Date.now();
-
+const moment = require("moment-timezone");
 const loop = () => {
   setTimeout(() => {
     listDirFiles(DIR)
@@ -85,10 +85,11 @@ const loop = () => {
                             // Envio o email
                             // Marco que enviei o email
                             // console.log('JSON= ',json.NAME)
+                            moment
                             mailer.sendMail(
                               {
-                                from: "sir3v3@gmail.com",
-                                to: "davispenha@gmail.com",
+                                from: "Alertas3v3@gmail.com",
+                                to: banco.EMAIL,
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
@@ -98,13 +99,13 @@ const loop = () => {
                                   unit:banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).format('MM/DD/YYYY  h:mm:ss'),
-                                  end: moment(moment(current_date)).format('MM/DD/YYYY  h:mm:ss'),
+                                  ).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
+                                  end: moment(moment(current_date)).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
                                 },
                               },
                               (err) => {
                                 if (err) {
-                                  console.log("ERROR AO ENVIAR O EMAIL");
+                                  console.log("ERROR AO ENVIAR O EMAIL ", err);
                                 }
                                 console.log("EMAIL ENVIADO COM SUCESSO!");
                               }
@@ -193,8 +194,8 @@ const loop = () => {
                             // Marco que enviei o email
                             mailer.sendMail(
                               {
-                                from: "sir3v3@gmail.com",
-                                to: "davispenha@gmail.com",
+                                from: "Alertas3v3@gmail.com",
+                                to: banco.EMAIL,
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
@@ -204,13 +205,13 @@ const loop = () => {
                                   unit:banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).format('MM/DD/YYYY  h:mm:ss'),
-                                  end: moment(moment(current_date)).format('MM/DD/YYYY  h:mm:ss'),
+                                  ).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
+                                  end: moment(moment(current_date)).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
                                 },
                               },
                               (err) => {
                                 if (err) {
-                                  console.log("ERROR AO ENVIAR O EMAIL");
+                                  console.log("ERROR AO ENVIAR O EMAIL ",err);
                                 }
                                 console.log("EMAIL ENVIADO COM SUCESSO!");
                               }

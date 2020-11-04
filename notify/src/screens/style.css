@@ -2,6 +2,7 @@
   --button-edit-form: #2497a8;
   --button-delete-form: #d31b2d;
   --submit-button-form:#58c02e;
+  --background-form: #ffffff;
 
 }
 input:-webkit-autofill {
@@ -83,8 +84,10 @@ input:-webkit-autofill:active {
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: #f1f1f1;
-  border: solid 2px #ebebeb;
+  background-color: var(--background-form);
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  /* border: solid 2px #e4e3e3; */
   border-radius: 10px;
 
   padding: 20px;
@@ -104,10 +107,11 @@ input:-webkit-autofill:active {
   font-weight: 500;
 }
 .input-group select {
-  
+  background-color: rgb(255, 255, 255);
 }
 .input-group input {
   padding: 0 8px;
+  background-color: rgb(255, 255, 255);
 }
 .input-group input,
 select {
@@ -153,7 +157,7 @@ select {
 }
 .mySchedule ul li {
   border-radius: 8px;
-  background-color: #f5f5f5;
+  background-color: var(--background-form);
   border: none;
   padding: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
