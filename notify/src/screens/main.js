@@ -62,7 +62,7 @@ function Main() {
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
     setNameUnit(data.data[0].UNIT)
-    setUnitSensor('1')
+    setUnitSensor('')
 
 
   }
@@ -92,6 +92,7 @@ function Main() {
       TIME: Number(TimeSensor),
       EMAIL: DestSensor,
     };
+    console.log('OBJ ',obj)
     api.post("notify-post-sensor-alert", obj)
       .then(data => {
         setItems(data.data.data)
@@ -169,6 +170,18 @@ function Main() {
         .then(data => {
           setItems(data.data.data)
         })
+        .then(_ => {
+          setMedicao([]);
+          setIdSensor(0);
+          setNameSensor("");
+          setValueSensor(0);
+          setUnitSensor("");
+          setCondSensor("0");
+          setTimeSensor(0);
+          // setPositionSensor(0);
+          setDestSensor("");
+          setShowEdit(false);
+        })
     }
     // setItems(local);
   }
@@ -210,6 +223,7 @@ function Main() {
     setDestSensor("");
     setShowEdit(false);
   }
+ 
 
   return (
     <div className="container">
@@ -345,16 +359,16 @@ function Main() {
                         setPositionSensor(e.target.value)
                         setUnitSensor(e.target.selectedOptions[0].id)
                       }}
-                      value={unitSensor}
+                      defaultValue={unitSensor}
                       title="Medida do sensor"
                       required
                     >
-                      <option value="1" disabled>
+                      <option value=""  selected>
                         Selecione
                     </option>
                       {medicao.map((item) =>
                         item.map((e, i) => (
-                          <option value={`${i}`} key={i} id={NameUnit[i]} >
+                          <option value={`${i}`} key={i} id={NameUnit[i]} required>
                             {e}
                           </option>
                         ))
@@ -454,7 +468,7 @@ function Main() {
                   </div>
                   <div id="footer-Container">
                     <p className="date-detail">
-                      Alerta criado em {moment(e.created_at).locale('pt-br').format('LLL')}
+                      Alerta criado em {moment(e.created_at).locale('pt-br').format('MM/DD/YYYY  h:mm:ss')}
                     </p>
 
                     <div id="buttons-Container">

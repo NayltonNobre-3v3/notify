@@ -95,12 +95,11 @@ const loop = () => {
                                   sensorName: json.NAME,
                                   cond: banco.COND,
                                   value: banco.VALUE,
+                                  unit:banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).format("LLLL"),
-                                  end: moment(moment(current_date)).format(
-                                    "LLLL"
-                                  ),
+                                  ).format('MM/DD/YYYY  h:mm:ss'),
+                                  end: moment(moment(current_date)).format('MM/DD/YYYY  h:mm:ss'),
                                 },
                               },
                               (err) => {
@@ -202,12 +201,11 @@ const loop = () => {
                                   sensorName: json.NAME,
                                   cond: banco.COND,
                                   value: banco.VALUE,
+                                  unit:banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).format("LLLL"),
-                                  end: moment(moment(current_date)).format(
-                                    "LLLL"
-                                  ),
+                                  ).format('MM/DD/YYYY  h:mm:ss'),
+                                  end: moment(moment(current_date)).format('MM/DD/YYYY  h:mm:ss'),
                                 },
                               },
                               (err) => {
