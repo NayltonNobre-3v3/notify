@@ -1,15 +1,17 @@
+// Diretório 
 // const DIR = "/mnt/fcir/sns";
 const DIR = "C:/Users/Davis/Documents/sns";
+
 const fs = require("fs-extra");
 const knex = require("../../database/connections");
-const moment = require("moment")
+// const moment = require("moment;")
 const mailer = require("../../modules/nodemail")
 let sensors_monit = [];
 const api = require("../../variables_api/monitoring-variables")
 
 let off_range_sensors = [];
 let current_date = Date.now();
-
+const moment = require("moment-timezone");
 const loop = () => {
   setTimeout(() => {
     listDirFiles(DIR)
@@ -33,6 +35,7 @@ const loop = () => {
             ndata.map((banco) => {
               // MAP DO JSON
               sensors_monit.map((json) => {
+                // Horário atual -> a cada 2 segundos irá ser alterado
                 current_date = Date.now();
                 // SE O ID QUE ESTIVER NO BANCO FOR IGUAL AO ID DO JSON QUE ESTOU PERCORRENDO
                 if (json.ID === banco.ID_SENSOR) {
@@ -43,8 +46,12 @@ const loop = () => {
                     if (json.VALUE[banco.POSITION] > banco.VALUE) {
                       
 
-                      // Verificar se existe ou nÃ£o os valores no array
+                      // Verifica se existe ou não os valores no array
+                      // Uso para as seguintes condições: Caso o valor já exista no off_range_sensors irá calcular o tempo (variacao)
+                      // Caso não exista irá adicionar os valores no off_range_sensors
                       const include = off_range_sensors.findIndex((off_range) => {
+                        // Uso o ID, COND e VALUE pois garanto que estou pegando um item específico no
+                        // array off_range_sensors
                         return (
                           off_range.ID === json.ID &&
                           off_range.COND === banco.COND && 
@@ -52,7 +59,8 @@ const loop = () => {
                           
                         );
                       });
-                      // Se nÃ£o existir no array
+                      // Se não existir então irá adicionar no array con os dados específicos
+
                       if (include < 0) {
                         off_range_sensors.push({
                           ID: json.ID,
@@ -62,16 +70,16 @@ const loop = () => {
                           VALUE:banco.VALUE
                         });
                       }
-                      // Se existir e nÃ£o tive enviado o email entÃ£o calculo o tempo
+                      // Se existir e nÃ£o tiver enviado o email entÃ£o calculo o tempo
                       else if (
                         include >= 0 &&
                         off_range_sensors[include].email === false
                       ) {
-                        // Pego o meu horÃ¡rio atual e subtraio com o horÃ¡rio que estaÂ´no array
                         const repeatItem = off_range_sensors.findIndex(
                           (repeat) =>
-                            repeat.ID === json.ID && repeat.COND === banco.COND && repeat.VALUE === banco.VALUE
-                        );
+                          repeat.ID === json.ID && repeat.COND === banco.COND && repeat.VALUE === banco.VALUE
+                          );
+                          // Pego o meu horário atual e subtraio com o horário que está no array
                         let variacao =
                           moment(current_date).unix() -
                           moment(off_range_sensors[repeatItem].time).unix();
@@ -83,42 +91,47 @@ const loop = () => {
                           // console.log('OFF RANGE SENSOR= ',(off_range_sensors))
                           if (off_range_sensors[repeatItem].email === false) {
                             // Envio o email
-                            // Marco que enviei o email
                             // console.log('JSON= ',json.NAME)
+                            moment
                             mailer.sendMail(
                               {
-                                from: "sir3v3@gmail.com",
-                                to: "davispenha@gmail.com",
+                                from: "Alertas3v3@gmail.com",
+                                to: banco.EMAIL,
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
                                   sensorName: json.NAME,
                                   cond: banco.COND,
                                   value: banco.VALUE,
+                                  VALUE_JSON:json.VALUE[banco.POSITION],
                                   unit:banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).format('MM/DD/YYYY  h:mm:ss'),
-                                  end: moment(moment(current_date)).format('MM/DD/YYYY  h:mm:ss'),
+                                  ).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
+                                  end: moment(moment(current_date)).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
                                 },
                               },
                               (err) => {
                                 if (err) {
-                                  console.log("ERROR AO ENVIAR O EMAIL");
+                                  console.log("ERROR AO ENVIAR O EMAIL ", err);
+                                  return
                                 }
                                 console.log("EMAIL ENVIADO COM SUCESSO!");
                               }
                             );
+                            // Marco que enviei o email
                             off_range_sensors[repeatItem].email = true;
                           }
                         }
-                        // Se tiver registrado que enviei o email e
+                        // Se já estiver enviado o email então realizo X operação
                         if (off_range_sensors[repeatItem].email === true) {
+                          // Campo para realizar a operação
                           return;
                         }
                       }
                     }
-                    //Se sair da faixa dos valores entÃ£o apaga o registro
+                    //Se sair da faixa dos valores da condição ACIMA então irá apagar o registro do off_range_sensors
+                    // OBS: irá apagar somente o valor que sair da faixa, condição muito específica
                     else {
                       // Procuro pelo o item que jÃ¡ existe
                       const include = off_range_sensors.findIndex((off_range) => {
@@ -193,24 +206,25 @@ const loop = () => {
                             // Marco que enviei o email
                             mailer.sendMail(
                               {
-                                from: "sir3v3@gmail.com",
-                                to: "davispenha@gmail.com",
+                                from: "Alertas3v3@gmail.com",
+                                to: banco.EMAIL,
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
                                   sensorName: json.NAME,
                                   cond: banco.COND,
                                   value: banco.VALUE,
+                                  VALUE_JSON:json.VALUE[banco.POSITION],
                                   unit:banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).format('MM/DD/YYYY  h:mm:ss'),
-                                  end: moment(moment(current_date)).format('MM/DD/YYYY  h:mm:ss'),
+                                  ).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
+                                  end: moment(moment(current_date)).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
                                 },
                               },
                               (err) => {
                                 if (err) {
-                                  console.log("ERROR AO ENVIAR O EMAIL");
+                                  console.log("ERROR AO ENVIAR O EMAIL ",err);
                                 }
                                 console.log("EMAIL ENVIADO COM SUCESSO!");
                               }
