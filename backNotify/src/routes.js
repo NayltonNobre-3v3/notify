@@ -14,6 +14,19 @@ route.get("/notify-get-sensors/:id", (req, res) => {
 
   return res.status(200).json(filter);
 });
+route.get('/search',async(req,res)=>{
+  const valid = !!req.query.name.split(' ').join('');
+
+  let data=await database('notifications')
+  if(data.length && valid){
+    let x=data.filter(item =>
+      item.NAME.indexOf(req.query.name.toUpperCase()) > -1
+    )
+    return res.status(200).json(x)
+  }else{
+    return res.status(200).json(data)
+  }
+})
 route.get("/notify-get-sensors", (req, res) => {
   let data = []
   if(api.sensorMonitoring.length>0){

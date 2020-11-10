@@ -3,9 +3,9 @@ const DIR = "C:/Users/davi/Downloads/sns";
 const fs = require("fs-extra");
 const knex = require("../../database/connections");
 // const moment = require("moment;")
-const mailer = require("../../modules/nodemail")
+const mailer = require("../../modules/nodemail");
 let sensors_monit = [];
-const api = require("../../variables_api/monitoring-variables")
+const api = require("../../variables_api/monitoring-variables");
 
 let off_range_sensors = [];
 let current_date = Date.now();
@@ -15,17 +15,15 @@ const loop = () => {
     listDirFiles(DIR)
       .then((arr) => Promise.all(arr.map((item) => readFile(`${DIR}/${item}`))))
       .then((arr) => {
-        let data=arr.map(e=>JSON.parse(e))
-        return data
-
+        let data = arr.map((e) => JSON.parse(e));
+        return data;
       })
-      .then(arr =>{ 
+      .then((arr) => {
         // console.log(' sensors_monit= ',arr)
-        api.sensorMonitoring = arr
-        sensors_monit=arr
+        api.sensorMonitoring = arr;
+        sensors_monit = arr;
       })
       .then((_) => {
-        
         knex("notifications")
           // PEGO DO BANCO
           .then((ndata) => {
@@ -37,21 +35,20 @@ const loop = () => {
                 // SE O ID QUE ESTIVER NO BANCO FOR IGUAL AO ID DO JSON QUE ESTOU PERCORRENDO
                 if (json.ID === banco.ID_SENSOR) {
                   if (banco.COND === "ACIMA") {
-                    
-                    
+                    // console.log("REPETIDOS= ", off_range_sensors);
+
                     // console.log('API SENSOR= ',json)
                     if (json.VALUE[banco.POSITION] > banco.VALUE) {
-                      
-
                       // Verificar se existe ou nÃ£o os valores no array
-                      const include = off_range_sensors.findIndex((off_range) => {
-                        return (
-                          off_range.ID === json.ID &&
-                          off_range.COND === banco.COND && 
-                          off_range.VALUE === banco.VALUE
-                          
-                        );
-                      });
+                      const include = off_range_sensors.findIndex(
+                        (off_range) => {
+                          return (
+                            off_range.ID === json.ID &&
+                            off_range.COND === banco.COND &&
+                            off_range.VALUE === banco.VALUE
+                          );
+                        }
+                      );
                       // Se nÃ£o existir no array
                       if (include < 0) {
                         off_range_sensors.push({
@@ -59,19 +56,20 @@ const loop = () => {
                           COND: banco.COND,
                           email: false,
                           time: current_date,
-                          VALUE:banco.VALUE
+                          VALUE: banco.VALUE,
+                          VALUE_JSON: json.VALUE[banco.POSITION],
                         });
                       }
                       // Se existir e nÃ£o tive enviado o email entÃ£o calculo o tempo
-                      else if (
-                        include >= 0 &&
-                        off_range_sensors[include].email === false
-                      ) {
+                      else if (include >= 0) {
                         // Pego o meu horÃ¡rio atual e subtraio com o horÃ¡rio que estaÂ´no array
                         const repeatItem = off_range_sensors.findIndex(
                           (repeat) =>
-                            repeat.ID === json.ID && repeat.COND === banco.COND && repeat.VALUE === banco.VALUE
+                            repeat.ID === json.ID &&
+                            repeat.COND === banco.COND &&
+                            repeat.VALUE === banco.VALUE
                         );
+
                         let variacao =
                           moment(current_date).unix() -
                           moment(off_range_sensors[repeatItem].time).unix();
@@ -85,7 +83,8 @@ const loop = () => {
                             // Envio o email
                             // Marco que enviei o email
                             // console.log('JSON= ',json.NAME)
-                            moment
+                            // console.log(off_range_sensors);
+                            moment;
                             mailer.sendMail(
                               {
                                 from: "Alertas3v3@gmail.com",
@@ -96,11 +95,16 @@ const loop = () => {
                                   sensorName: json.NAME,
                                   cond: banco.COND,
                                   value: banco.VALUE,
-                                  unit:banco.UNIT,
+                                  VALUE_JSON: json.VALUE[banco.POSITION],
+                                  unit: banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
-                                  end: moment(moment(current_date)).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
+                                  )
+                                    .tz("America/Fortaleza")
+                                    .format("DD/MM/YYYY  HH:mm:ss"),
+                                  end: moment(moment(current_date))
+                                    .tz("America/Fortaleza")
+                                    .format("DD/MM/YYYY  HH:mm:ss"),
                                 },
                               },
                               (err) => {
@@ -115,30 +119,41 @@ const loop = () => {
                         }
                         // Se tiver registrado que enviei o email e
                         if (off_range_sensors[repeatItem].email === true) {
-                          return;
+                          console.log("JÁ ENVIADO acima");
+                          // return;
                         }
+                      }
+                      // Se já existir e o valor do json for alterado (atualizado) irá atualizar o VALUE do array off_range_sensors
+                      else if (include >= 0) {
+                        //
+                        off_range_sensors.map(
+                          (e) => (e.VALUE_JSON = json.VALUE[banco.POSITION])
+                        );
                       }
                     }
                     //Se sair da faixa dos valores entÃ£o apaga o registro
                     else {
                       // Procuro pelo o item que jÃ¡ existe
-                      const include = off_range_sensors.findIndex((off_range) => {
-                        return (
-                          off_range.ID === json.ID &&
-                          off_range.COND === banco.COND && 
-                          off_range.VALUE === banco.VALUE
-                        );
-                      });
+                      const include = off_range_sensors.findIndex(
+                        (off_range) => {
+                          return (
+                            off_range.ID === json.ID &&
+                            off_range.COND === banco.COND &&
+                            off_range.VALUE === banco.VALUE
+                          );
+                        }
+                      );
                       // Se tiver encontrado algum item repetido entÃ£o tirarÃ¡ do array
-                      if (include >= 0) {
+                      if (include >= 0 && off_range_sensors[include].email === true) {
                         // Tiro do array off_range_sensors
-                        const filteredItems = off_range_sensors.filter((item) => {
-                          return item.ID !== off_range_sensors[include].ID;
-                        });
+                        const filteredItems = off_range_sensors.filter(
+                          (item) => {
+                            return item.ID !== off_range_sensors[include].ID;
+                          }
+                        );
                         off_range_sensors = filteredItems;
-                        // console.log(off_range_sensors)
                       }
-                      return
+                      return;
                     }
                   }
                   // Se a condiÃ§Ã£o for ABAIXO
@@ -146,15 +161,17 @@ const loop = () => {
                     if (json.VALUE[banco.POSITION] < banco.VALUE) {
                       // console.log('SENSOR MONIT= ',sensors_monit.length)
                       // Verificar se tem o mesmo ID e se a condiÃ§Ã£o Ã© a mesma
-                      const include = off_range_sensors.findIndex((off_range) => {
-                        // Vai procurar se no array em que registro os alertas que irÃ£o ser
-                        // verificados se tem algum que tenha o mesmo ID e mesma condiÃ§Ã£i
-                        return (
-                          off_range.ID === json.ID &&
-                          off_range.COND === banco.COND && 
-                          off_range.VALUE === banco.VALUE
-                        );
-                      });
+                      const include = off_range_sensors.findIndex(
+                        (off_range) => {
+                          // Vai procurar se no array em que registro os alertas que irÃ£o ser
+                          // verificados se tem algum que tenha o mesmo ID e mesma condiÃ§Ã£i
+                          return (
+                            off_range.ID === json.ID &&
+                            off_range.COND === banco.COND &&
+                            off_range.VALUE === banco.VALUE
+                          );
+                        }
+                      );
                       // Se o valor que está no banco não estiver no array então eu cadastro no array
                       if (include < 0) {
                         off_range_sensors.push({
@@ -162,30 +179,37 @@ const loop = () => {
                           COND: banco.COND,
                           email: false,
                           time: current_date,
-                          VALUE:banco.VALUE
+                          VALUE: banco.VALUE,
+                          VALUE_JSON: json.VALUE[banco.POSITION],
                         });
                       }
                       // Se o valor que está no banco já existir no arra e não estiver enviado o email
-                      else if (include >= 0 && off_range_sensors[include].email === false) {
+                      else if (
+                        include >= 0 &&
+                        off_range_sensors[include].email === false
+                      ) {
+                        // console.log(off_range_sensors);
                         // Verifico se no array tem o elemento com o mesmo ID  do json e mesma condição do BANCO
                         // para evitar repetição
                         const repeatItem = off_range_sensors.findIndex(
                           (repeat) => {
                             return (
-                              // Evitar que calcule o tempo dos sensores com mesmo ID 
-                              repeat.ID === json.ID && repeat.COND === banco.COND && repeat.VALUE === banco.VALUE
-                              );
-                            }
+                              // Evitar que calcule o tempo dos sensores com mesmo ID
+                              repeat.ID === json.ID &&
+                              repeat.COND === banco.COND &&
+                              repeat.VALUE === banco.VALUE
                             );
-                            
-                            // Pego o meu horÃ¡rio atual e subtraio com o horÃ¡rio que estaÂ´no array
-                            let variacao =
-                            moment(current_date).unix() -
-                            moment(off_range_sensors[repeatItem].time).unix();
-                            // console.log(moment.unix(variacao).format("mm:ss"));
-                            // Se estiver acima do valor que estÃ¡ no banco
-                            
-                            // console.log('off_range_sensors ',variacao,' ',off_range_sensors,'\n')
+                          }
+                        );
+
+                        // Pego o meu horÃ¡rio atual e subtraio com o horÃ¡rio que estaÂ´no array
+                        let variacao =
+                          moment(current_date).unix() -
+                          moment(off_range_sensors[repeatItem].time).unix();
+                        // console.log(moment.unix(variacao).format("mm:ss"));
+                        // Se estiver acima do valor que estÃ¡ no banco
+
+                        // console.log('off_range_sensors ',variacao,' ',off_range_sensors,'\n')
                         if (variacao >= banco.TIME) {
                           // Mudar a variÃ¡vel email para true
                           // Se nÃ£o tiver enviado o email
@@ -202,16 +226,21 @@ const loop = () => {
                                   sensorName: json.NAME,
                                   cond: banco.COND,
                                   value: banco.VALUE,
-                                  unit:banco.UNIT,
+                                  VALUE_JSON: json.VALUE[banco.POSITION],
+                                  unit: banco.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
-                                  ).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
-                                  end: moment(moment(current_date)).tz('America/Fortaleza').format('DD/MM/YYYY  HH:mm:ss'),
+                                  )
+                                    .tz("America/Fortaleza")
+                                    .format("DD/MM/YYYY  HH:mm:ss"),
+                                  end: moment(moment(current_date))
+                                    .tz("America/Fortaleza")
+                                    .format("DD/MM/YYYY  HH:mm:ss"),
                                 },
                               },
                               (err) => {
                                 if (err) {
-                                  console.log("ERROR AO ENVIAR O EMAIL ",err);
+                                  console.log("ERROR AO ENVIAR O EMAIL ", err);
                                 }
                                 console.log("EMAIL ENVIADO COM SUCESSO!");
                               }
@@ -221,29 +250,40 @@ const loop = () => {
                         }
                         // Se tiver registrado que enviei o email e
                         if (off_range_sensors[repeatItem].email === true) {
-                          return;
+                          console.log("JÁ ENVIADO abaixo");
+                          // return;
                         }
+                      }
+
+                      // Se já existir e o valor do json for alterado (atualizado) irá atualizar o valor do array off_range_sensors
+                      else if (include >= 0) {
+                        //
+                        off_range_sensors.map(
+                          (e) => (e.VALUE_JSON = json.VALUE[banco.POSITION])
+                        );
                       }
                     }
                     //Se sair da faixa dos valores entÃ£o apaga o registro
                     else {
                       // Procuro pelo o item que jÃ¡ existe
-                      const include = off_range_sensors.findIndex((off_range) => {
-                        return (
-                          off_range.ID === json.ID &&
-                          off_range.COND === banco.COND && 
-                          off_range.VALUE === banco.VALUE
-                        );
-                      });
+                      const include = off_range_sensors.findIndex(
+                        (off_range) => {
+                          return (
+                            off_range.ID === json.ID &&
+                            off_range.COND === banco.COND &&
+                            off_range.VALUE === banco.VALUE
+                          );
+                        }
+                      );
                       // Se tiver encontrado algum item repetido entÃ£o tirarÃ¡ do array
-                      if (include >= 0) {
+                      if (include >= 0  && off_range_sensors[include].email === true) {
                         // Tiro do array off_range_sensors
                         let filteredItems = off_range_sensors.filter((item) => {
                           return item.ID !== off_range_sensors[include].ID;
                         });
                         off_range_sensors = filteredItems;
                       }
-                      return
+                      return;
                     }
                   }
                 }
@@ -253,14 +293,11 @@ const loop = () => {
           .catch((err) => {
             console.log(err);
           });
-
-
       })
       .catch((err) => console.log(err))
       .then(() => loop());
   }, 2000);
 };
-
 
 // Lista os arquivos presentes em um diretÃ³rio
 function listDirFiles(url) {
@@ -278,5 +315,4 @@ function readFile(dir) {
   });
 }
 
-
-module.exports = loop
+module.exports = loop;
