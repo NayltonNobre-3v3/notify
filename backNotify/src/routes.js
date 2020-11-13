@@ -59,20 +59,22 @@ route.post("/notify-post-sensor-alert", async (req, res) => {
           POSITION,
         })
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           database("notifications")
-            .then(data => res.status(200).json({ data }))
-            .catch(err => res.status(400).json({ "message": "Error" }))
+            .then(data => res.status(200).json({data} ))
+            .catch(err =>{
+              throw "Ops, Problema ao inserir dados no banco"
+            })
         })
         .catch((error) => {
           console.log(error);
           throw "Não foi possível cadastrar no banco";
         });
     } else {
-      throw "Valor que está querendo inserir já existe no banco";
+      throw "Não é permitido inserir sensores com os mesmos dados";
     }
   } catch (error) {
-    return res.status(400).json({ msg: error });
+    return res.status(400).json(error);
   }
 });
 
@@ -93,10 +95,13 @@ route.put("/notify-put-sensor-alert/:id", (req, res) => {
     .then(_ => {
       database("notifications")
       .then(data => res.status(200).json({ data }))
-      .catch(err => res.status(400).json({ "message": "Error" }))
+      .catch(err => {
+        throw "Ops, Problema ao atualizar o banco"
+      })
     })
     .catch((error) => {
       console.log(error);
+      return res.status(400).json(error)
     });
   // return res.status(200).json(req.body);
 });
@@ -108,10 +113,13 @@ route.delete("/notify-delete-sensor-alert/:id", (req, res) => {
     .then((data) => {
       database("notifications")
       .then(data => res.status(200).json({ data }))
-      .catch(err => res.status(400).json({ "message": "Error" }))
+      .catch(err => {
+        throw "Ops, Problema ao deletar um alarme"
+      })
     })
     .catch((err) => {
       console.log(err);
+      return res.status(400).json(err)
     });
 });
 

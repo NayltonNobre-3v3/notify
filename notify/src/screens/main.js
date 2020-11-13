@@ -100,13 +100,14 @@ function Main(props) {
       .then((_) => {
         toast.success(`Alarme criado com sucesso!`, {
           position: "top-left",
-          autoClose: 3000,
+          autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: false,
           draggable: true,
           progress: undefined,
         });
+
         setMedicao([]);
         setIdSensor(0);
         setNameSensor("");
@@ -119,7 +120,7 @@ function Main(props) {
         setShowEdit(false);
       })
       .catch((error) => {
-        toast.error("Opa colega, deu error aí", {
+        toast.error(`${error.response.data}`, {
           position: "top-left",
           autoClose: 3000,
           hideProgressBar: false,
@@ -128,6 +129,8 @@ function Main(props) {
           draggable: true,
           progress: undefined,
         });
+
+        console.log('ERROR= ',error.response.data)
       });
   }
   // PUT
@@ -148,7 +151,21 @@ function Main(props) {
     api
       .put(`/notify-put-sensor-alert/${IDAlert}`, obj)
       .then((data) => {
+
+        
+
         return setItems(data.data.data);
+      })
+      .catch(error=>{
+        toast.error("Opa colega, deu error aí", {
+          position: "top-left",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+        });
       })
       .then((_) => {
         setMedicao([]);
@@ -169,6 +186,15 @@ function Main(props) {
       api
         .delete(`notify-delete-sensor-alert/${id}`)
         .then((data) => {
+          toast.success(`Alarme deletado com sucesso!`, {
+            position: "top-left",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+          });
           setItems(data.data.data);
         })
         .then((_) => {
@@ -209,6 +235,8 @@ function Main(props) {
     setDestSensor(data.EMAIL);
     setUnitSensor(data.UNIT);
     setPositionSensor(data.POSITION);
+
+    document.body.scrollToBottom()
     
   }
   // Ocultar o Formulário de edição
@@ -510,7 +538,7 @@ function Main(props) {
 
                       <div id="buttons-Container">
                         <a
-                          href="#form"
+                          
                           className="edit-button"
                           onClick={() => ShowEditForm(e)}
                         >

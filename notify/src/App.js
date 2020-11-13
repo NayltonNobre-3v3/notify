@@ -8,7 +8,7 @@ function App() {
   return (
     <>
       <Route />
-      <ToastContainer autoClose={3000}>
+      <ToastContainer autoClose={2000}>
         position="top-right" 
         autoClose={2000}
         hideProgressBar={false}
