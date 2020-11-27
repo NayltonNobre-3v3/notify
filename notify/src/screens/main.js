@@ -236,8 +236,7 @@ function Main(props) {
     setUnitSensor(data.UNIT);
     setPositionSensor(data.POSITION);
 
-    document.body.scrollToBottom()
-    
+
   }
   // Ocultar o Formulário de edição
   function hideEditForm() {
@@ -538,7 +537,7 @@ function Main(props) {
 
                       <div id="buttons-Container">
                         <a
-                          
+                          href="#form"
                           className="edit-button"
                           onClick={() => ShowEditForm(e)}
                         >
