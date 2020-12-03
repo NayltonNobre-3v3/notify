@@ -2,6 +2,7 @@
   --button-edit-form: #2497a8;
   --button-delete-form: #d31b2d;
   --submit-button-form:#58c02e;
+  --background-form: #ffffff;
 
 }
 input:-webkit-autofill {
@@ -16,7 +17,7 @@ input:-webkit-autofill:active {
 
 /* ScroolBar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 /* Track */
@@ -45,7 +46,7 @@ input:-webkit-autofill:active {
 }
 .container aside {
   width: 250px;
-
+  
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,6 +68,7 @@ input:-webkit-autofill:active {
   padding: 40px;
   display: grid;
   grid-template-columns: 3fr 3fr;
+  /* grid-template-rows: 2fr 2fr; */
   grid-template-areas: "Form List";
   grid-gap: 10px;
 }
@@ -83,8 +85,10 @@ input:-webkit-autofill:active {
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: #f5f5f5;
-  border: solid 2px #ebebeb;
+  background-color: var(--background-form);
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  /* border: solid 2px #e4e3e3; */
   border-radius: 10px;
 
   padding: 20px;
@@ -104,10 +108,11 @@ input:-webkit-autofill:active {
   font-weight: 500;
 }
 .input-group select {
-  
+  background-color: rgb(255, 255, 255);
 }
 .input-group input {
   padding: 0 8px;
+  background-color: rgb(255, 255, 255);
 }
 .input-group input,
 select {
@@ -118,11 +123,46 @@ select {
 .input-group #ValueInput {
   width: 210px;
 }
+/* search  */
+.search-input-container{
 
+  margin:0 0 10px 0;
+  width: 100%;
+  display: flex;
+
+  position: sticky;
+  top: 0;
+  
+}
+.search-input-container input{
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border: none;
+  height: 2rem;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  padding: 8px;
+  width: 90%;
+}
+.search-input-container p {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  height: 2rem;
+  border: none;
+  background-color: var(--submit-button-form);
+  color: #ffffff;
+  width: 2rem;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  width: 10%;
+  /* height: 6px; */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 /* CARDS SENSORS */
 .mySchedule {
   grid-area: List;
-  height: 100%;
+  height: 80%;
   overflow-y: auto;
 }
 
@@ -148,18 +188,18 @@ select {
 }
 .mySchedule ul {
   list-style: none;
-  overflow-y: auto;
   height: 100%;
+  overflow-y: scroll;
 }
 .mySchedule ul li {
   border-radius: 8px;
-  background-color: #f5f5f5;
+  background-color: var(--background-form);
   border: none;
   padding: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   margin-bottom: 10px;
 }
-.mySchedule ul li button {
+.mySchedule ul li button,a {
   border: none;
   /* padding: 8px; */
   border-radius: 20%;
@@ -176,7 +216,7 @@ select {
   height: 14px;
 }
 .mySchedule #not-found {
-  color: white;
+  color: rgb(131, 129, 129);
 }
 #footer-Container {
   display: flex;
@@ -263,27 +303,37 @@ select {
 }
 @media (min-width: 768px) {
   .mySchedule{
-    height: 460px;
+    max-height: 790px;
+    overflow-y: auto;
   }
   .container{
     overflow:hidden;
   }
+  .container main {
+    height: 100%;
+  }
+  .container main .mySchedule{
+    /* height: 96%; */
+  }
+
 
 }
-@media (min-width: 768px ) and (max-width:1014px){
+@media (min-width: 1024px ) and (max-width:1014px){
   .container main .monitSelect form label {
     font-size: 18px;
     color: rgb(59, 59, 59);
     font-weight: 700;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 1110px) {
   .container{
     position: relative;
     overflow-y: auto;
     /* max-height: 350px; */
 
   }
+
+
   .container main {
     display: flex;
     flex-direction: column;
@@ -359,8 +409,8 @@ select {
   }
   .mySchedule ul {
     list-style: none;
-    /* overflow-y: unset; */
-    /* height: 100%; */
+    overflow-y: unset;
+    height: 100%;
   }
   .input-group input,
   select {
