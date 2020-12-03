@@ -1,5 +1,5 @@
-import api from "../api/api";
-// import axios from 'axios'
+// import api from "../api/api";
+import axios from 'axios'
 import {
   SENSOR_LIST_SUCESS,
   SENSOR_LIST_FAIL,
@@ -9,7 +9,7 @@ import {
 const listSensor = () => async (dispatch) => {
   try {
     dispatch({ type: SENSOR_LIST_REQUEST });
-    const { data } = await api.get("notify-get-sensors");
+    const { data } = await axios.get("notify-get-sensors");
     dispatch({ type: SENSOR_LIST_SUCESS, payload: data });
   } catch (error) {
     dispatch({ type: SENSOR_LIST_FAIL, payload: error.message });

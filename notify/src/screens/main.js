@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FaPen, FaTrash } from "react-icons/fa";
 import { AiFillAlert, AiFillFrown, AiOutlineSearch } from "react-icons/ai";
-import api from "../api/api";
+// import api from "../api/api";
 
-// import axios from 'axios'
+import axios from 'axios'
 // import moment from "moment";
 import { toast } from "react-toastify";
 import * as moment from "moment-timezone";
@@ -46,7 +46,7 @@ function Main(props) {
   // Quando iniciar a aplicação irá carregar todos os valores do banco
   useEffect(() => {
     async function getValues() {
-      const { data } = await api.get("notify-sensors-alert");
+      const { data } = await axios.get("notify-sensors-alert");
       setItems(data.data);
     }
     getValues();
@@ -54,7 +54,7 @@ function Main(props) {
 
   // Extrai as medições do sensor específico
   async function ListOneSensor(e) {
-    const data = await api.get(`notify-get-sensors/${e.target.value}`);
+    const data = await axios.get(`notify-get-sensors/${e.target.value}`);
     const json = JSON.stringify(data.data);
     const medicao = JSON.parse(json);
 
@@ -67,7 +67,7 @@ function Main(props) {
   }
 
   async function ListOneSensorEdit(e) {
-    const data = await api.get(`notify-get-sensors/${e}`);
+    const data = await axios.get(`notify-get-sensors/${e}`);
     const json = JSON.stringify(data.data);
     const medicao = JSON.parse(json);
     const values = medicao.map((item) => item.TYPE);
@@ -92,7 +92,7 @@ function Main(props) {
       EMAIL: DestSensor,
     };
     // console.log('OBJ ',obj)
-    api
+    axios
       .post("notify-post-sensor-alert", obj)
       .then((data) => {
         setItems(data.data.data);
@@ -148,7 +148,7 @@ function Main(props) {
       EMAIL: DestSensor,
     };
 
-    api
+    axios
       .put(`/notify-put-sensor-alert/${IDAlert}`, obj)
       .then((data) => {
 
@@ -183,7 +183,7 @@ function Main(props) {
   // DELETE
   function handleDelete(id) {
     if (window.confirm("Tem certeza que deseja deletar o alarme?")) {
-      api
+      axios
         .delete(`notify-delete-sensor-alert/${id}`)
         .then((data) => {
           toast.success(`Alarme deletado com sucesso!`, {
@@ -254,7 +254,7 @@ function Main(props) {
   
   function searchSubmit(e) {
     e.preventDefault();
-    api
+    axios
     .get(`/search?name=${searchKeyword}`)
     .then((data) => setItems(data.data));
   }
