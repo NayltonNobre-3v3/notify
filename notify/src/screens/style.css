@@ -42,7 +42,7 @@ input:-webkit-autofill:active {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 .container aside {
   width: 250px;
@@ -65,6 +65,7 @@ input:-webkit-autofill:active {
 .container main {
   width: 100%;
   max-width: 1280px;
+  max-height: 100vh;
   padding: 40px;
   display: grid;
   grid-template-columns: 3fr 3fr;
@@ -162,7 +163,7 @@ select {
 /* CARDS SENSORS */
 .mySchedule {
   grid-area: List;
-  height: 80%;
+  height: 100%;
   overflow-y: auto;
 }
 
@@ -189,7 +190,7 @@ select {
 .mySchedule ul {
   list-style: none;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .mySchedule ul li {
   border-radius: 8px;
@@ -302,18 +303,20 @@ select {
   background-color: rgb(255, 255, 255);
 }
 @media (min-width: 768px) {
-  .mySchedule{
-    max-height: 790px;
-    overflow-y: auto;
+  .mySchedule ul{
+    max-height: 85vh;
+    overflow-y: auto !important;
   }
   .container{
-    overflow:hidden;
+    /* overflow:hidden; */
+    /* overflow-y: auto; */
   }
   .container main {
     height: 100%;
   }
   .container main .mySchedule{
     /* height: 96%; */
+
   }
 
 
@@ -328,7 +331,7 @@ select {
 @media (max-width: 1110px) {
   .container{
     position: relative;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     /* max-height: 350px; */
 
   }
@@ -364,7 +367,7 @@ select {
     width: 100%;
     padding: 0;
     margin: 0;
-    overflow: auto;
+    /* overflow: auto; */
 ;
   }
   .container main fieldset #titleForm {
@@ -409,7 +412,7 @@ select {
   }
   .mySchedule ul {
     list-style: none;
-    overflow-y: unset;
+    /* overflow-y: unset; */
     height: 100%;
   }
   .input-group input,
