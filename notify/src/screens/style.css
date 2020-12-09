@@ -2,6 +2,7 @@
   --button-edit-form: #2497a8;
   --button-delete-form: #d31b2d;
   --submit-button-form:#7AB648;
+  --submit-button-form-dark:#74af44;
   --background-form: #ffffff;
 
 }
@@ -139,7 +140,7 @@ select {
 }
 .search-input-container input{
   /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
-  /* border: none; */
+  border: none;
   border: solid 2px rgb(231, 231, 231);
   /* border-radius: 5px; */
   height: 2rem;
@@ -148,7 +149,11 @@ select {
   padding: 8px;
   width: 90%;
 }
+.search-input-container input:focus{
+  border: solid 2px rgb(180, 198, 247);
+}
 .search-input-container p {
+  cursor: pointer;
   /* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
   height: 2rem;
   border: solid 2px rgb(231, 231, 231);
@@ -165,6 +170,9 @@ select {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.search-input-container p:hover{
+  background-color: var(--submit-button-form-dark);
 }
 /* CARDS SENSORS */
 .mySchedule {
@@ -199,14 +207,15 @@ select {
   overflow-y: auto;
 }
 .mySchedule ul li {
-  border-radius: 8px;
+  /* border-radius: 8px; */
   background-color: var(--background-form);
-  /* border: none; */
+  border: none;
   padding: 10px;
   border: solid 2px rgb(231, 231, 231);
-  border-radius: 5px;
+  /* border-radius: 5px; */
   /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
   margin-bottom: 10px;
+  border-radius: 5px;
 }
 .mySchedule ul li button,a {
   border: none;
@@ -294,6 +303,9 @@ select {
   font-weight: 500;
   font-size: 16px;
 }
+.buttons-container button[type="submit"]:hover{
+  background-color: var(--submit-button-form-dark);
+}
 .buttons-container button[type="button"] {
   background-color: rgb(233, 232, 232);
   font-weight: 500;
@@ -329,14 +341,14 @@ select {
 
 
 }
-@media (min-width: 1024px ) and (max-width:1014px){
+@media (min-width: 1024px ) and (max-width:1044px){
   .container main .monitSelect form label {
     font-size: 18px;
     color: rgb(59, 59, 59);
     font-weight: 700;
   }
 }
-@media (max-width: 1110px) {
+@media (max-width: 1190px) {
   .container{
     position: relative;
     /* overflow-y: auto; */

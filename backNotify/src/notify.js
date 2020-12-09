@@ -25,6 +25,6 @@ getAllSensors();
 
 app.use(route);
 
-app.listen(1000, () => {
-  console.log("Rodando em http://localhost:1000");
+app.listen(81, () => {
+  console.log("Rodando em http://localhost:81");
 });
