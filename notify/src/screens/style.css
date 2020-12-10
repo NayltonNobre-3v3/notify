@@ -1,10 +1,9 @@
-:root{
+:root {
   --button-edit-form: #2497a8;
   --button-delete-form: #d31b2d;
-  --submit-button-form:#7AB648;
-  --submit-button-form-dark:#74af44;
+  --submit-button-form: #7ab648;
+  --submit-button-form-dark: #74af44;
   --background-form: #ffffff;
-
 }
 input:-webkit-autofill {
   color: #2a2a2a !important;
@@ -36,6 +35,7 @@ input:-webkit-autofill:active {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--submit-button-form);
 }
+
 .container {
   width: 100%;
   height: 100%;
@@ -47,7 +47,7 @@ input:-webkit-autofill:active {
 }
 .container aside {
   width: 250px;
-  
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -89,12 +89,8 @@ input:-webkit-autofill:active {
   width: 100%;
   background-color: var(--background-form);
   border: none;
-  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
-  /* border: solid 2px #e4e3e3; */
   border: solid 2px rgb(231, 231, 231);
   border-radius: 5px;
-  /* border-radius: 10px; */
-
   padding: 20px;
 }
 .container main .monitSelect form label {
@@ -122,42 +118,37 @@ input:-webkit-autofill:active {
 select {
   border: solid 2px rgb(231, 231, 231);
   border-radius: 5px;
+  max-width: 210px;
   width: 210px;
 }
 .input-group #ValueInput {
-  width: 210px;
+  max-width: 210px;
 }
 /* search  */
-.search-input-container{
-
-  margin:0 0 10px 0;
+.search-input-container {
+  margin: 0 0 10px 0;
   width: 100%;
   display: flex;
 
   position: sticky;
   top: 0;
-  
 }
-.search-input-container input{
-  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
+.search-input-container input {
   border: none;
   border: solid 2px rgb(231, 231, 231);
-  /* border-radius: 5px; */
   height: 2rem;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 8px;
   width: 90%;
 }
-.search-input-container input:focus{
+.search-input-container input:focus {
   border: solid 2px rgb(180, 198, 247);
 }
 .search-input-container p {
   cursor: pointer;
-  /* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
   height: 2rem;
   border: solid 2px rgb(231, 231, 231);
-  /* border-radius: 5px; */
   border: none;
   background-color: var(--submit-button-form);
   color: #ffffff;
@@ -165,13 +156,12 @@ select {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   width: 10%;
-  /* height: 6px; */
 
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.search-input-container p:hover{
+.search-input-container p:hover {
   background-color: var(--submit-button-form-dark);
 }
 /* CARDS SENSORS */
@@ -199,7 +189,6 @@ select {
   color: rgb(255, 255, 255);
   margin: 0;
   padding: 0;
-
 }
 .mySchedule ul {
   list-style: none;
@@ -207,17 +196,15 @@ select {
   overflow-y: auto;
 }
 .mySchedule ul li {
-  /* border-radius: 8px; */
   background-color: var(--background-form);
-  border: none;
+  /* border: none; */
   padding: 10px;
   border: solid 2px rgb(231, 231, 231);
-  /* border-radius: 5px; */
-  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
   margin-bottom: 10px;
   border-radius: 5px;
 }
-.mySchedule ul li button,a {
+.mySchedule ul li button,
+a {
   border: none;
   /* padding: 8px; */
   border-radius: 20%;
@@ -250,7 +237,7 @@ select {
   background-color: var(--button-edit-form);
 }
 .delete-button {
-  background-color:var(--button-delete-form);
+  background-color: var(--button-delete-form);
   margin-left: 8px;
 }
 .head-card h1 {
@@ -298,12 +285,12 @@ select {
   margin-top: 10px;
 }
 .buttons-container button[type="submit"] {
-  background-color:var(--submit-button-form);
+  background-color: var(--submit-button-form);
   color: rgb(250, 250, 250);
   font-weight: 500;
   font-size: 16px;
 }
-.buttons-container button[type="submit"]:hover{
+.buttons-container button[type="submit"]:hover {
   background-color: var(--submit-button-form-dark);
 }
 .buttons-container button[type="button"] {
@@ -323,61 +310,91 @@ select {
   background-color: rgb(255, 255, 255);
 }
 @media (min-width: 768px) {
-  .mySchedule ul{
+  .mySchedule ul {
     max-height: 85vh;
     overflow-y: auto !important;
   }
-  .container{
-    /* overflow:hidden; */
-    /* overflow-y: auto; */
-  }
+
   .container main {
     height: 100%;
   }
-  .container main .mySchedule{
-    /* height: 96%; */
-
-  }
-
 
 }
-@media (min-width: 1024px ) and (max-width:1044px){
+@media (min-width: 997px) and (max-width: 1192px) {
   .container main .monitSelect form label {
     font-size: 18px;
     color: rgb(59, 59, 59);
     font-weight: 700;
   }
-}
-@media (max-width: 1190px) {
-  .container{
-    position: relative;
-    /* overflow-y: auto; */
-    /* max-height: 350px; */
 
+  .input-group input {
+    padding: 0 8px;
   }
-
 
   .container main {
     display: flex;
-    flex-direction: column;
-    padding: 0;
+    padding: 10px 10px;
     margin: 0;
     top: 0;
     left: 0;
-    position:absolute;
-    /* height: 100%; */
+    position: absolute;
 
-    /* width: 100vh; */
+  }
+  .cards-container {
+    /* min-width: 450px; */
+    flex-grow: 1;
+  }
+  .container main .monitSelect {
+    min-width: 330px;
+  }
+  .input-group input,
+  select {
+    border: solid 2px rgb(231, 231, 231);
+    border-radius: 5px;
+    max-width: 110px;
+  }
+  .input-group #ValueInput {
+    max-width: 110px;
+  }
+}
+
+@media (max-width: 997px) and (min-width: 550px) {
+  .container {
+    position: relative;
+  }
+
+  .input-group input,
+  select {
+    border: solid 2px rgb(231, 231, 231);
+    border-radius: 5px;
+    min-width: 100%;
+  }
+  .input-group #ValueInput {
+    min-width: 100%;
+  }
+
+  .cards-container {
+    min-width: 120px;
+
+  }
+  .container main {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 100px;
+    margin: 0;
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
   }
 
   .container main .monitSelect {
     width: 100%;
-    /* overflow: hidden; */
+
   }
   .container main .monitSelect form {
     width: 100%;
-    /* height: 100%; */
-    /* overflow-y: auto; */
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -388,7 +405,6 @@ select {
     padding: 0;
     margin: 0;
     /* overflow: auto; */
-;
   }
   .container main fieldset #titleForm {
     font-size: 21px;
@@ -396,10 +412,6 @@ select {
     text-align: center;
   }
 
-  .mySchedule {
-    /* height: 100%; */
-    /* overflow-y: hidden; */
-  }
   .head-card h1 {
     font-size: 18px;
   }
@@ -414,6 +426,105 @@ select {
     color: rgb(59, 59, 59);
     font-weight: 700;
   }
+  /* Inputs FORM */
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  .input-group label {
+    font-weight: 500;
+    font-size: 12px;
+  }
+  .input-group select {
+    width: 100%;
+  }
+  .input-group input {
+    padding: 0 8px;
+  }
+  .mySchedule ul {
+    list-style: none;
+    height: 100%;
+  }
+  .input-group input,
+  select {
+    border: solid 2px rgb(231, 231, 231);
+    border-radius: 5px;
+    width: 100%;
+    height: 32px;
+  }
+  .input-group #ValueInput {
+    width: 100%;
+  }
+}
+
+@media (max-width: 550px){
+  .container {
+    position: relative;
+  }
+
+  .input-group input,
+  select {
+    border: solid 2px rgb(231, 231, 231);
+    border-radius: 5px;
+    min-width: 100%;
+  }
+  .input-group #ValueInput {
+    min-width: 100%;
+  }
+
+  .cards-container {
+    min-width: 120px;
+
+  }
+  .container main {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  .container main .monitSelect {
+    width: 100%;
+
+  }
+  .container main .monitSelect form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .container main fieldset {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .container main fieldset #titleForm {
+    font-size: 21px;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .head-card h1 {
+    font-size: 18px;
+  }
+  .mySchedule .content-card p {
+    font-size: 12px;
+  }
+  .mySchedule #footer-Container p {
+    font-size: 10px;
+  }
+  .container main .monitSelect form label {
+    font-size: 16px;
+    color: rgb(59, 59, 59);
+    font-weight: 700;
+  }
+  /* Inputs FORM */
 
   .input-group {
     display: flex;

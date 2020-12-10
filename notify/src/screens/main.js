@@ -329,7 +329,7 @@ function Main(props) {
 
                 <div className="input-group">
                   <label htmlFor="selectTime" title="Tempo em minutos">
-                    Tempo (minutos):
+                    Tempo (min):
                   </label>
                   <input
                     id="selectTime"
@@ -455,7 +455,7 @@ function Main(props) {
 
                 <div className="input-group">
                   <label htmlFor="selectTime" title="Tempo em minutos">
-                    Tempo (minutos):
+                    Tempo (min):
                   </label>
                   <input
                     id="selectTime"
