@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { FaPen, FaTrash } from "react-icons/fa";
-import { AiFillAlert, AiFillFrown, AiOutlineSearch } from "react-icons/ai";
+import { AiFillFrown, AiOutlineSearch } from "react-icons/ai";
 // import api from "../api/api";
 
 import axios from 'axios'
-// import moment from "moment";
 import { toast } from "react-toastify";
 import * as moment from "moment-timezone";
 
 import "./style.css";
 
-import { useSelector, useDispatch } from "react-redux";
-import { listSensor } from "../Actions/SensorListActions";
+
 
 function Main(props) {
   const [medicao, setMedicao] = useState([]);
@@ -27,20 +25,14 @@ function Main(props) {
   const [TimeSensor, setTimeSensor] = useState(0);
   const [DestSensor, setDestSensor] = useState("");
   const [NameUnit, setNameUnit] = useState("");
+  const [sensors,setSensors]=useState([])
 
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  // Pego a o meu estado
-  const SensorList = useSelector((state) => state.sensorList);
-  // Listando todos os sensores que estão no banco
-  const { sensors, loading, error } = SensorList;
-
-  // Disparador de actions
-  const dispatch = useDispatch();
 
   // Carrega todo o valores quando eu reiniciar o estado
   useEffect(() => {
-    dispatch(listSensor());
+     axios.get("notify-get-sensors").then(data=>setSensors(data.data))
   }, []);
 
   // Quando iniciar a aplicação irá carregar todos os valores do banco
@@ -55,10 +47,7 @@ function Main(props) {
   // Extrai as medições do sensor específico
   async function ListOneSensor(e) {
     const data = await axios.get(`notify-get-sensors/${e.target.value}`);
-    const json = JSON.stringify(data.data);
-    const medicao = JSON.parse(json);
-
-    const values = medicao.map((item) => item.TYPE);
+    const values = data.data.map((item) => item.TYPE);
     setMedicao(values);
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
@@ -68,16 +57,13 @@ function Main(props) {
 
   async function ListOneSensorEdit(e) {
     const data = await axios.get(`notify-get-sensors/${e}`);
-    const json = JSON.stringify(data.data);
-    const medicao = JSON.parse(json);
-    const values = medicao.map((item) => item.TYPE);
+    const values = data.data.map((item) => item.TYPE);
     setMedicao(values);
     setIdSensor(data.data[0].ID);
     setNameSensor(data.data[0].NAME);
     setNameUnit(data.data[0].UNIT);
   }
 
-  // POST
   function submitHandle(e) {
     e.preventDefault();
 
@@ -91,7 +77,6 @@ function Main(props) {
       TIME: Number(TimeSensor),
       EMAIL: DestSensor,
     };
-    // console.log('OBJ ',obj)
     axios
       .post("notify-post-sensor-alert", obj)
       .then((data) => {
@@ -133,7 +118,6 @@ function Main(props) {
         console.log('ERROR= ',error.response.data)
       });
   }
-  // PUT
   function submitHandlePUT(e) {
     e.preventDefault();
 
@@ -151,9 +135,6 @@ function Main(props) {
     axios
       .put(`/notify-put-sensor-alert/${IDAlert}`, obj)
       .then((data) => {
-
-        
-
         return setItems(data.data.data);
       })
       .catch(error=>{
@@ -175,12 +156,10 @@ function Main(props) {
         setUnitSensor("");
         setCondSensor("0");
         setTimeSensor(0);
-        // setPositionSensor(0);
         setDestSensor("");
         setShowEdit(false);
       });
   }
-  // DELETE
   function handleDelete(id) {
     if (window.confirm("Tem certeza que deseja deletar o alarme?")) {
       axios
@@ -205,15 +184,12 @@ function Main(props) {
           setUnitSensor("");
           setCondSensor("0");
           setTimeSensor(0);
-          // setPositionSensor(0);
           setDestSensor("");
           setShowEdit(false);
         });
     }
-    // setItems(local);
   }
   
-  // Mostrar o Formulário de edição
   function ShowEditForm(data) {
     setMedicao([]);
     setIdSensor(0);
@@ -238,7 +214,6 @@ function Main(props) {
 
 
   }
-  // Ocultar o Formulário de edição
   function hideEditForm() {
     setMedicao([]);
     setIdSensor(0);
@@ -284,6 +259,10 @@ function Main(props) {
                     title="Medida do sensor"
                     required
                   >
+                    <option value="" disabled>
+                      Selecione
+                    </option>
+
                     {medicao.map((item) =>
                       item.map((e, i) => (
                         <option
@@ -506,7 +485,6 @@ function Main(props) {
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
             />
-            {/* <button type="submit">S</button> */}
             <p onClick={searchSubmit}>
               <AiOutlineSearch size={24} />
             </p>

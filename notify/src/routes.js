@@ -9,7 +9,6 @@ function Routes() {
     <BrowserRouter>
       <Switch>
         <Route path="/" component={MainScreen} exact/>
-        {/* <Route path="/Edit/:id" component={EditScreen}/> */}
       </Switch>
     </BrowserRouter>
   );

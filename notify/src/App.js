@@ -9,13 +9,13 @@ function App() {
     <>
       <Route />
       <ToastContainer autoClose={2000}>
-        position="top-right" 
+        position="top-right"
         autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick rtl={false}
-        pauseOnFocusLoss 
-        draggable 
+        pauseOnFocusLoss
+        draggable
         pauseOnHover
       </ToastContainer>
     </>
