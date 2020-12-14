@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const route = require("./routes");
 const getAllSensors = require("./WriteRead/function/ReadConcat");
+const PORT = 90;
 
 const path = require("path");
 
@@ -25,6 +26,6 @@ getAllSensors();
 
 app.use(route);
 
-app.listen(81, () => {
-  console.log("Rodando em http://localhost:81");
+app.listen(PORT, () => {
+  console.log(`Rodando em http://localhost:${PORT}`);
 });
