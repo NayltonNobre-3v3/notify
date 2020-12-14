@@ -4,7 +4,7 @@ const database = require("../src/database/connections");
 const route = express.Router();
 const api = require("../src/variables_api/monitoring-variables");
 
-route.get("/notify-get-sensors/:id", (req, res) => {
+route.get("/notify/get-sensors/:id", (req, res) => {
   let data = [];
   api.sensorMonitoring.map((e) => {
     data.push(e);
