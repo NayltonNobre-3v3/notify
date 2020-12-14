@@ -13,7 +13,7 @@ route.get("/notify-get-sensors/:id", (req, res) => {
 
   return res.status(200).json(filter);
 });
-route.get("/search", async (req, res) => {
+route.get("/notify/search", async (req, res) => {
   const valid = !!req.query.name.split(" ").join("");
 
   let data = await database("notifications");
@@ -26,7 +26,7 @@ route.get("/search", async (req, res) => {
     return res.status(200).json(data);
   }
 });
-route.get("/notify-get-sensors", (req, res) => {
+route.get("/notify/get-sensors", (req, res) => {
   try {
     let data = [];
     if (api.sensorMonitoring.length > 0) {
@@ -41,7 +41,7 @@ route.get("/notify-get-sensors", (req, res) => {
     return res.status(500).json(error);
   }
 });
-route.post("/notify-post-sensor-alert", async (req, res) => {
+route.post("/notify/post-sensor-alert", async (req, res) => {
   const {
     TIME,
     VALUE,
@@ -89,7 +89,7 @@ route.post("/notify-post-sensor-alert", async (req, res) => {
   }
 });
 
-route.put("/notify-put-sensor-alert/:id", (req, res) => {
+route.put("/notify/put-sensor-alert/:id", (req, res) => {
   const {
     TIME,
     VALUE,
@@ -126,7 +126,7 @@ route.put("/notify-put-sensor-alert/:id", (req, res) => {
   // return res.status(200).json(req.body);
 });
 
-route.delete("/notify-delete-sensor-alert/:id", (req, res) => {
+route.delete("/notify/delete-sensor-alert/:id", (req, res) => {
   database("notifications")
     .where({ id: req.params.id })
     .delete()
@@ -144,7 +144,7 @@ route.delete("/notify-delete-sensor-alert/:id", (req, res) => {
 });
 
 // Pegar Alertas de Sensores
-route.get("/notify-sensors-alert", (req, res) => {
+route.get("/notify/sensors-alert", (req, res) => {
   database("notifications")
     .then((data) => {
       return res.status(200).json({ data });
@@ -154,7 +154,7 @@ route.get("/notify-sensors-alert", (req, res) => {
     });
 });
 // Pegar Alerta específico
-route.get("/notify-sensor-alert/:id", (req, res) => {
+route.get("/notify/sensor-alert/:id", (req, res) => {
   database("notifications")
     .where({ id: req.params.id })
     .then((data) => {
