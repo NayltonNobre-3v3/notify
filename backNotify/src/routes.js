@@ -100,7 +100,8 @@ route.put("/notify/put-sensor-alert/:id", (req, res) => {
     COND,
     POSITION,
   } = req.body;
-  database("notifications")
+  try {
+    database("notifications")
     .where({ id: req.params.id })
     .update({
       TIME: TIME * 60,
@@ -121,8 +122,12 @@ route.put("/notify/put-sensor-alert/:id", (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      return res.status(400).json(error);
+      // return res.status(400).json(error);
+      throw "Não foi possível atualizar o alarme";
     });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
   // return res.status(200).json(req.body);
 });
 
