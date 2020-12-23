@@ -26,9 +26,7 @@ const loop = () => {
       })
       .then((_) => {
         knex("notifications")
-          // PEGO DO BANCO
           .then((ndata) => {
-            // MAP DO BANCO - PERCORRENDO O ARRAY
             ndata.map((banco) => {
               // MAP DO JSON
               sensors_monit.map((json) => {
@@ -36,14 +34,14 @@ const loop = () => {
                 current_date = Date.now();
                 // SE O ID QUE ESTIVER NO BANCO FOR IGUAL AO ID DO JSON QUE ESTOU PERCORRENDO
                 if (json.ID === banco.ID_SENSOR) {
-                  if (banco.COND === "ACIMA") {
+                  if (banco.CONDITION === "ACIMA") {
                     if (json.VALUE[banco.POSITION] > banco.VALUE) {
-                      // Verificar se existe ou nÃ£o os valores no array
+                      // Verificar se existe ou nÃo os valores no array
                       const include = off_range_sensors.findIndex(
                         (off_range) => {
                           return (
                             off_range.ID === json.ID &&
-                            off_range.COND === banco.COND &&
+                            off_range.CONDITION === banco.CONDITION &&
                             off_range.VALUE === banco.VALUE
                           );
                         }
@@ -52,8 +50,8 @@ const loop = () => {
                       if (include < 0) {
                         off_range_sensors.push({
                           ID: json.ID,
-                          UID:banco.created_at,
-                          COND: banco.COND,
+                          UID:banco.CREATED_AT,
+                          CONDITION: banco.CONDITION,
                           email: false,
                           time: current_date,
                           VALUE: banco.VALUE,
@@ -66,7 +64,7 @@ const loop = () => {
                         const repeatItem = off_range_sensors.findIndex(
                           (repeat) =>
                             repeat.ID === json.ID &&
-                            repeat.COND === banco.COND &&
+                            repeat.CONDITION === banco.CONDITION &&
                             repeat.VALUE === banco.VALUE
                         );
 
@@ -87,8 +85,9 @@ const loop = () => {
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
                                   sensorName: json.NAME,
-                                  cond: banco.COND,
+                                  cond: banco.CONDITION,
                                   value: banco.VALUE,
+                                  medition_type:banco.MEDITION_TYPE,
                                   VALUE_JSON: json.VALUE[banco.POSITION],
                                   unit: banco.UNIT,
                                   start: moment(
@@ -131,7 +130,7 @@ const loop = () => {
                         (off_range) => {
                           return (
                             off_range.ID === json.ID &&
-                            off_range.COND === banco.COND &&
+                            off_range.CONDITION === banco.CONDITION &&
                             off_range.VALUE === banco.VALUE
                           );
                         }
@@ -148,14 +147,14 @@ const loop = () => {
                       return;
                     }
                   }
-                  if (banco.COND === "ABAIXO") {
+                  if (banco.CONDITION === "ABAIXO") {
                     if (json.VALUE[banco.POSITION] < banco.VALUE) {
                       // Verificar se tem o mesmo ID e se a condiÃ§Ã£o Ã© a mesma
                       const include = off_range_sensors.findIndex(
                         (off_range) => {
                           return (
                             off_range.ID === json.ID &&
-                            off_range.COND === banco.COND &&
+                            off_range.CONDITION === banco.CONDITION &&
                             off_range.VALUE === banco.VALUE      
                           );
                         }
@@ -163,8 +162,8 @@ const loop = () => {
                       if (include < 0) {
                         off_range_sensors.push({
                           ID: json.ID,
-                          UID:banco.created_at,
-                          COND: banco.COND,
+                          UID:banco.CREATED_AT,
+                          CONDITION: banco.CONDITION,
                           email: false,
                           time: current_date,
                           VALUE: banco.VALUE,
@@ -181,7 +180,7 @@ const loop = () => {
                             return (
                               // Evitar que calcule o tempo dos sensores com mesmo ID
                               repeat.ID === json.ID &&
-                              repeat.COND === banco.COND &&
+                              repeat.CONDITION === banco.CONDITION &&
                               repeat.VALUE === banco.VALUE
                             );
                           }
@@ -200,8 +199,9 @@ const loop = () => {
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
                                   sensorName: json.NAME,
-                                  cond: banco.COND,
+                                  cond: banco.CONDITION,
                                   value: banco.VALUE,
+                                  medition_type:banco.MEDITION_TYPE,
                                   VALUE_JSON: json.VALUE[banco.POSITION],
                                   unit: banco.UNIT,
                                   start: moment(
@@ -240,7 +240,7 @@ const loop = () => {
                         (off_range) => {
                           return (
                             off_range.ID === json.ID &&
-                            off_range.COND === banco.COND &&
+                            off_range.CONDITION === banco.CONDITION &&
                             off_range.VALUE === banco.VALUE
                           );
                         }

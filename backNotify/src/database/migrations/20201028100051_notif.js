@@ -6,12 +6,14 @@ exports.up = function (knex) {
         table.string('NAME').notNullable();
         table.string('EMAIL').notNullable();
         table.string('UNIT').notNullable();
-        table.string('COND').notNullable();
+        table.string('CONDITION').notNullable();
+        table.string('MEDITION_TYPE').notNullable();
+        table.string('NOTE',100).nullable();
         table.decimal('VALUE').notNullable();
         table.integer('TIME').notNullable();
         table.integer('POSITION').notNullable();
-        table.timestamp('created_at').defaultTo(knex.fn.now());
-        table.timestamp('updated_at').defaultTo(knex.fn.now());
+        table.timestamp('CREATED_AT').defaultTo(knex.fn.now());
+        table.timestamp('UPDATED_AT').defaultTo(knex.fn.now());
     })
 };
 

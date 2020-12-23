@@ -49,12 +49,14 @@ route.post("/notify/post-sensor-alert", async (req, res) => {
     UNIT,
     ID_SENSOR,
     EMAIL,
-    COND,
+    NOTE,
+    MEDITION_TYPE,
+    CONDITION,
     POSITION,
   } = req.body;
   const duplicate = await database("notifications")
     .where("ID_SENSOR", ID_SENSOR)
-    .andWhere("COND", COND)
+    .andWhere("CONDITION", CONDITION)
     .andWhere("VALUE", VALUE);
   try {
     if (!duplicate.length) {
@@ -66,7 +68,9 @@ route.post("/notify/post-sensor-alert", async (req, res) => {
           UNIT,
           ID_SENSOR,
           EMAIL,
-          COND,
+          NOTE,
+          MEDITION_TYPE,
+          CONDITION,
           POSITION,
         })
         .then((data) => {
@@ -97,7 +101,9 @@ route.put("/notify/put-sensor-alert/:id", (req, res) => {
     UNIT,
     ID_SENSOR,
     EMAIL,
-    COND,
+    NOTE,
+    MEDITION_TYPE,
+    CONDITION,
     POSITION,
   } = req.body;
   try {
@@ -110,7 +116,9 @@ route.put("/notify/put-sensor-alert/:id", (req, res) => {
       NAME,
       ID_SENSOR,
       EMAIL,
-      COND,
+      NOTE,
+      MEDITION_TYPE,
+      CONDITION,
       POSITION,
     })
     .then((_) => {
