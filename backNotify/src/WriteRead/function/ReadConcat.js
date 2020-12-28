@@ -8,7 +8,9 @@ const mailer = require("../../modules/nodemail");
 const moment = require("moment-timezone");
 
 let sensors_monit = [];
+
 let off_range_sensors = [];
+
 let current_date = Date.now();
 
 
@@ -34,6 +36,7 @@ const loop = () => {
                 current_date = Date.now();
                 // SE O ID QUE ESTIVER NO BANCO FOR IGUAL AO ID DO JSON QUE ESTOU PERCORRENDO
                 if (json.ID === banco.ID_SENSOR) {
+                  
                   if (banco.CONDITION === "ACIMA") {
                     if (json.VALUE[banco.POSITION] > banco.VALUE) {
                       // Verificar se existe ou nÃo os valores no array
