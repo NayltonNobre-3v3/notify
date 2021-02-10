@@ -1,31 +1,37 @@
-// import express from "express";
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const route = require("./routes");
-const getAllSensors = require("./WriteRead/function/ReadConcat");
-const PORT = 90;
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import route from "./routes";
+import path from "path";
+import getAllSensors from "./WriteRead/function/ReadConcat";
+class Notify {
+  constructor() {
+    this.app = express();
+    this.middlewares();
+    this.routes();
+    this.Monit()
+  }
+  middlewares() {
+    this.app.use(cors());
+    this.app.use(express.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(express.static(path.join(__dirname, "..", "build")));
+  }
+  routes() {
+    this.app.use(route);
+  }
+  set listen(PORT) {
+    this.app.listen(PORT, () => {
+      console.log(
+        `%c RUNNING IN http://localhost:${PORT}`,
+        "background: #222; color: #bada55"
+      );
+    });
+  }
+  Monit(){
+    getAllSensors()
+  }
 
-const path = require("path");
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(express.static(path.join(__dirname, "..", "build")));
-
-app.get("/", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "..", "build", "index.html")
-  );
-});
-
-// Transforma TXT em JSON e realiza a leitura dos sensores
-getAllSensors();
-
-app.use(route);
-
-app.listen(PORT, () => {
-  console.log(`Rodando em http://localhost:${PORT}`);
-});
+}
+export default new Notify();

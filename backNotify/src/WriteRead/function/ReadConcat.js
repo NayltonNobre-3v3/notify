@@ -1,11 +1,13 @@
 // Diretório 
-const DIR = "/mnt/fcir/sns";
-const api = require("../../variables_api/monitoring-variables");
-// const DIR = "C:/Users/Davis/Documents/sns";
-const fs = require("fs-extra");
-const knex = require("../../database/connections");
-const mailer = require("../../modules/nodemail");
-const moment = require("moment-timezone");
+// const DIR = "/mnt/fcir/sns";
+import api from "../../variables_api/monitoring-variables";
+// import DIR from "C:/Users/Davis/Documents/sns";
+const DIR ="C:/Users/davi/Downloads/sns";
+// import fs from "fs-extra";
+import fs from "fs-extra";
+import knex from "../../database/connections";
+import mailer from "../../modules/nodemail";
+import moment from "moment-timezone";
 
 let sensors_monit = [];
 
@@ -28,24 +30,24 @@ const loop = () => {
       })
       .then((_) => {
         knex("notifications")
-          .then((ndata) => {
-            ndata.map((banco) => {
+          .then((banco) => {
+            banco.map((data) => {
               // MAP DO JSON
               sensors_monit.map((json) => {
                 // Horário atual -> a cada 2 segundos irá ser alterado
                 current_date = Date.now();
                 // SE O ID QUE ESTIVER NO BANCO FOR IGUAL AO ID DO JSON QUE ESTOU PERCORRENDO
-                if (json.ID === banco.ID_SENSOR) {
+                if (json.ID === data.ID_SENSOR) {
                   
-                  if (banco.CONDITION === "ACIMA") {
-                    if (json.VALUE[banco.POSITION] > banco.VALUE) {
+                  if (data.CONDITION === "ACIMA") {
+                    if (json.VALUE[banco.POSITION] > data.VALUE) {
                       // Verificar se existe ou nÃo os valores no array
                       const include = off_range_sensors.findIndex(
                         (off_range) => {
                           return (
                             off_range.ID === json.ID &&
-                            off_range.CONDITION === banco.CONDITION &&
-                            off_range.VALUE === banco.VALUE
+                            off_range.CONDITION === data.CONDITION &&
+                            off_range.VALUE === data.VALUE
                           );
                         }
                       );
@@ -53,12 +55,12 @@ const loop = () => {
                       if (include < 0) {
                         off_range_sensors.push({
                           ID: json.ID,
-                          UID:banco.CREATED_AT,
-                          CONDITION: banco.CONDITION,
+                          UID:data.CREATED_AT,
+                          CONDITION: data.CONDITION,
                           email: false,
                           time: current_date,
-                          VALUE: banco.VALUE,
-                          VALUE_JSON: json.VALUE[banco.POSITION],
+                          VALUE: data.VALUE,
+                          VALUE_JSON: json.VALUE[data.POSITION],
                         });
                       }
                       // Se existir e nÃ£o tive enviado o email entÃ£o calculo o tempo
@@ -67,15 +69,15 @@ const loop = () => {
                         const repeatItem = off_range_sensors.findIndex(
                           (repeat) =>
                             repeat.ID === json.ID &&
-                            repeat.CONDITION === banco.CONDITION &&
-                            repeat.VALUE === banco.VALUE
+                            repeat.CONDITION === data.CONDITION &&
+                            repeat.VALUE === data.VALUE
                         );
 
                         let variacao =
                           moment(current_date).unix() -
                           moment(off_range_sensors[repeatItem].time).unix();
                         // Se estiver acima do valor que estÃ¡ no banco
-                        if (variacao > banco.TIME) {
+                        if (variacao > data.TIME) {
                           // Mudar a variÃ¡vel email para true
                           // Se nÃ£o tiver enviado o email
                           if (off_range_sensors[repeatItem].email === false) {
@@ -83,16 +85,16 @@ const loop = () => {
                             mailer.sendMail(
                               {
                                 from: "Alertas3v3@gmail.com",
-                                to: banco.EMAIL,
+                                to: data.EMAIL,
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
                                   sensorName: json.NAME,
-                                  cond: banco.CONDITION,
-                                  value: banco.VALUE,
-                                  medition_type:banco.MEDITION_TYPE,
-                                  VALUE_JSON: json.VALUE[banco.POSITION],
-                                  unit: banco.UNIT,
+                                  cond: data.CONDITION,
+                                  value: data.VALUE,
+                                  medition_type:data.MEDITION_TYPE,
+                                  VALUE_JSON: json.VALUE[data.POSITION],
+                                  unit: data.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
                                   )
@@ -122,7 +124,7 @@ const loop = () => {
                       else if (include >= 0) {
                         //
                         off_range_sensors.map(
-                          (e) => (e.VALUE_JSON = json.VALUE[banco.POSITION])
+                          (e) => (e.VALUE_JSON = json.VALUE[data.POSITION])
                         );
                       }
                     }
@@ -133,8 +135,8 @@ const loop = () => {
                         (off_range) => {
                           return (
                             off_range.ID === json.ID &&
-                            off_range.CONDITION === banco.CONDITION &&
-                            off_range.VALUE === banco.VALUE
+                            off_range.CONDITION === data.CONDITION &&
+                            off_range.VALUE === data.VALUE
                           );
                         }
                       );
@@ -150,27 +152,27 @@ const loop = () => {
                       return;
                     }
                   }
-                  if (banco.CONDITION === "ABAIXO") {
-                    if (json.VALUE[banco.POSITION] < banco.VALUE) {
+                  if (data.CONDITION === "ABAIXO") {
+                    if (json.VALUE[data.POSITION] < data.VALUE) {
                       // Verificar se tem o mesmo ID e se a condiÃ§Ã£o Ã© a mesma
                       const include = off_range_sensors.findIndex(
                         (off_range) => {
                           return (
                             off_range.ID === json.ID &&
-                            off_range.CONDITION === banco.CONDITION &&
-                            off_range.VALUE === banco.VALUE      
+                            off_range.CONDITION === data.CONDITION &&
+                            off_range.VALUE === data.VALUE      
                           );
                         }
                       );
                       if (include < 0) {
                         off_range_sensors.push({
                           ID: json.ID,
-                          UID:banco.CREATED_AT,
-                          CONDITION: banco.CONDITION,
+                          UID:data.CREATED_AT,
+                          CONDITION: data.CONDITION,
                           email: false,
                           time: current_date,
-                          VALUE: banco.VALUE,
-                          VALUE_JSON: json.VALUE[banco.POSITION],
+                          VALUE: data.VALUE,
+                          VALUE_JSON: json.VALUE[data.POSITION],
                         });
                       }
 
@@ -183,8 +185,8 @@ const loop = () => {
                             return (
                               // Evitar que calcule o tempo dos sensores com mesmo ID
                               repeat.ID === json.ID &&
-                              repeat.CONDITION === banco.CONDITION &&
-                              repeat.VALUE === banco.VALUE
+                              repeat.CONDITION === data.CONDITION &&
+                              repeat.VALUE === data.VALUE
                             );
                           }
                         );
@@ -192,21 +194,21 @@ const loop = () => {
                         let variacao =
                           moment(current_date).unix() -
                           moment(off_range_sensors[repeatItem].time).unix();
-                        if (variacao >= banco.TIME) {
+                        if (variacao >= data.TIME) {
                           if (off_range_sensors[repeatItem].email === false) {
                             mailer.sendMail(
                               {
                                 from: "Alertas3v3@gmail.com",
-                                to: banco.EMAIL,
+                                to: data.EMAIL,
                                 template: "auth/sensorAlert",
                                 subject: "Alerta de sensor! 3v3",
                                 context: {
                                   sensorName: json.NAME,
-                                  cond: banco.CONDITION,
-                                  value: banco.VALUE,
-                                  medition_type:banco.MEDITION_TYPE,
-                                  VALUE_JSON: json.VALUE[banco.POSITION],
-                                  unit: banco.UNIT,
+                                  cond: data.CONDITION,
+                                  value: data.VALUE,
+                                  medition_type:data.MEDITION_TYPE,
+                                  VALUE_JSON: json.VALUE[data.POSITION],
+                                  unit: data.UNIT,
                                   start: moment(
                                     moment(off_range_sensors[repeatItem].time)
                                   )
@@ -233,7 +235,7 @@ const loop = () => {
                       else if (include >= 0) {
                         //
                         off_range_sensors.map(
-                          (e) => (e.VALUE_JSON = json.VALUE[banco.POSITION])
+                          (e) => (e.VALUE_JSON = json.VALUE[data.POSITION])
                         );
                       }
                     }
@@ -243,8 +245,8 @@ const loop = () => {
                         (off_range) => {
                           return (
                             off_range.ID === json.ID &&
-                            off_range.CONDITION === banco.CONDITION &&
-                            off_range.VALUE === banco.VALUE
+                            off_range.CONDITION === data.CONDITION &&
+                            off_range.VALUE === data.VALUE
                           );
                         }
                       );
@@ -285,4 +287,4 @@ function readFile(dir) {
   });
 }
 
-module.exports = loop;
+export default loop;
