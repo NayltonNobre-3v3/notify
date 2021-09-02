@@ -26,7 +26,7 @@ export default class AlertsController {
     db("notifications")
     .where({ id: Request.params.id })
     .delete()
-    .then((data) => {
+    .then((_) => {
       database("notifications")
         .then((data) => Response.status(200).json({ data }))
         .catch((err) => {
@@ -114,7 +114,7 @@ export default class AlertsController {
             CONDITION,
             POSITION,
           })
-          .then((data) => {
+          .then((_) => {
             // console.log(data);
             db("notifications")
               .then((data) => Response.status(200).json({ data }))

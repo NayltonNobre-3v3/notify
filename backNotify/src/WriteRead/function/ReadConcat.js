@@ -10,7 +10,7 @@ import mailer from "../../modules/nodemail";
 import moment from "moment-timezone";
 
 let sensors_monit = [];
-
+// Array momentâneo no qual irá guardar os dados que estão na condição especificada
 let off_range_sensors = [];
 
 let current_date = Date.now();
@@ -41,7 +41,7 @@ const loop = () => {
                   
                   if (data.CONDITION === "ACIMA") {
                     if (json.VALUE[banco.POSITION] > data.VALUE) {
-                      // Verificar se existe ou nÃo os valores no array
+                      // Verificar se existe ou nÃo os valores no array 
                       const include = off_range_sensors.findIndex(
                         (off_range) => {
                           return (

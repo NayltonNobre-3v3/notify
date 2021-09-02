@@ -15,6 +15,7 @@ exports.up = function (knex) {
         table.timestamp('CREATED_AT').defaultTo(knex.fn.now());
         table.timestamp('UPDATED_AT').defaultTo(knex.fn.now());
     })
+    
 };
 
 exports.down = function (knex) {

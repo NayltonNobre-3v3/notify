@@ -1,4 +1,3 @@
-const path = require("path");
 // Update with your config settings.
 
 var knex = require('knex')({
