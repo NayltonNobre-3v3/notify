@@ -98,12 +98,17 @@ export default class AlertsController {
     const duplicate = await db("notifications")
       .where("ID_SENSOR", ID_SENSOR)
       .andWhere("CONDITION", CONDITION)
-      .andWhere("VALUE", VALUE);
+      .andWhere("MEDITION_TYPE", MEDITION_TYPE)
+      .andWhere("UNIT", UNIT)
+      .andWhere("EMAIL", EMAIL)
+      .andWhere("VALUE", VALUE)
+      .andWhere("POSITION", POSITION);
     try {
       if (!duplicate.length) {
         db("notifications")
           .insert({
-            TIME: TIME * 60,
+            TIME: TIME * 1,
+            // TIME: TIME * 60,
             VALUE,
             NAME,
             UNIT,
@@ -127,10 +132,10 @@ export default class AlertsController {
             throw "Não foi possível cadastrar no banco";
           });
       } else {
-        throw "Não é permitido inserir sensores com os mesmos dados";
+        throw error;
       }
     } catch (error) {
-      return Response.status(400).json(error);
+      return Response.status(400).json({msg: error.message});
     }
   }
 

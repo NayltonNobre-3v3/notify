@@ -40,7 +40,8 @@ const loop = () => {
                 if (json.ID === data.ID_SENSOR) {
                   
                   if (data.CONDITION === "ACIMA") {
-                    if (json.VALUE[banco.POSITION] > data.VALUE) {
+                    console.log(data.POSITION,' ',data.VALUE);
+                    if (json.VALUE[data.POSITION] > data.VALUE) {
                       // Verificar se existe ou nÃo os valores no array 
                       const include = off_range_sensors.findIndex(
                         (off_range) => {

@@ -16,10 +16,10 @@ transport.use(
   hbs({
     viewEngine: {
       defaultLayout: undefined,
-      partialsDir: resolve("./resources/mail/"),
+      partialsDir: resolve(__dirname,'..','resources','mail'),
     },
     // Onde fica os templates de email
-    viewPath: resolve("./resources/mail"),
+    viewPath: resolve(__dirname,'..','resources','mail'),
     extName: ".html",
   })
 );
