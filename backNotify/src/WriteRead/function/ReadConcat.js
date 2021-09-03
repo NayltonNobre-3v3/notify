@@ -40,7 +40,6 @@ const loop = () => {
                 if (json.ID === data.ID_SENSOR) {
                   
                   if (data.CONDITION === "ACIMA") {
-                    console.log(data.POSITION,' ',data.VALUE);
                     if (json.VALUE[data.POSITION] > data.VALUE) {
                       // Verificar se existe ou nÃo os valores no array 
                       const include = off_range_sensors.findIndex(
@@ -115,6 +114,7 @@ const loop = () => {
                             );
                             // Marco que enviei o email
                             off_range_sensors[repeatItem].email = true;
+                            console.log('EMAIL ENVIADO');
                           }
                         }
                         // Se já estiver enviado o email então realizo X operação
@@ -227,6 +227,7 @@ const loop = () => {
                               }
                             );
                             off_range_sensors[repeatItem].email = true;
+                            console.log("EMAIL ENVIADO PARA ",off_range_sensors[repeatItem].EMAIL);
                           }
                         }
                         // if (off_range_sensors[repeatItem].email === true) {

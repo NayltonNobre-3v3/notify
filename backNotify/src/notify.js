@@ -3,7 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import route from "./routes";
 import path from "path";
-import getAllSensors from "./WriteRead/function/ReadConcat";
+import getAllSensors from "./WriteRead/function/ReadConcat2";
 class Notify {
   constructor() {
     this.app = express();

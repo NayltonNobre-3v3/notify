@@ -6,7 +6,7 @@ export default class AlertsController {
   async getAlerts(Request, Response) {
     db("notifications")
       .then((data) => {
-        return Response.status(200).json({ data });
+        return Response.status(200).json(data);
       })
       .catch((err) => {
         return Response.status(200).json({ err });
