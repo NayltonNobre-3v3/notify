@@ -5,19 +5,22 @@ Notify - BACKEND + FRONTEND
 Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 - [Node.js](https://nodejs.org/en/)
-- [React](https://reactjs.org)
-- [Toastify](https://fkhadra.github.io/react-toastify/introduction/)
 - [Knex](http://knexjs.org/)
 
 ### Utilizando o Server
 
 ```sh
+#Criar um arquivo de migration
+$ npx knex migrate:make migration_create_table
+
+#Instalar o Babel
+$ npm install babel-cli @babel/node @babel/cli @babel/core
 
 # Executando a aplicação:
 $ npm start
 
 # Instanciando o banco de dados:
-$ npm run knex:migrate
+$ npm run knex:migrate ou npx knex migrate:latest
 
 # Criando migration:
 $  npx knex migrate:make name_migration

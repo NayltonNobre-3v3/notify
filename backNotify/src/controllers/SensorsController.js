@@ -1,5 +1,4 @@
 import api from "../variables_api/monitoring-variables";
-import { Request, Response } from "express";
 
 export default class SensorsController {
   async getSensors(Request, Response) {
