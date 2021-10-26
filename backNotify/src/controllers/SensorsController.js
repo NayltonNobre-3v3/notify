@@ -17,11 +17,12 @@ export default class SensorsController {
     }
   }
   async getSensor(Request, Response) {
+    const {id}=Request.params
     let data = [];
     api.sensorMonitoring.map((e) => {
       data.push(e);
     });
-    const filter = data.filter((e) => e.ID === Number(req.params.id));
+    const filter = data.filter((e) => e.ID === Number(id));
 
     return Response.status(200).json(filter);
   }
