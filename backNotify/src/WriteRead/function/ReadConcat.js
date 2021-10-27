@@ -2,7 +2,7 @@
 // const DIR = "/mnt/fcir/sns";
 import api from "../../variables_api/monitoring-variables";
 // import DIR from "C:/Users/Davis/Documents/sns";
-const DIR = "C:/Users/davis/Documents/Sirv4Tests/fcir/sns";
+const DIR = "C:/Users/davi/Documents/test_backend_sirv4/fcir/sns";
 // import fs from "fs-extra";
 import fs from "fs-extra";
 import knex from "../../database/connections";
