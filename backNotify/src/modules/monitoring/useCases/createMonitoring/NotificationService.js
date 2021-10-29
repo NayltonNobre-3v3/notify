@@ -63,7 +63,7 @@ function checkConditions() {
         // estabelecida pelo o usuário
         let variation = MomentProvider.compareInMinutes(current_date, file_off_range.OFF_RANGE_DATE)
         console.log(off_range_files)
-        console.log(`VARIATION do ${file.NAME} -> ${variation}`)
+        console.log(`VARIATION do ${alert.ID} -> ${variation}`)
         // Se a variação do tempo do arquivo que está na condição  estabelecida para o alarme 
         //for maior do que o tempo especificado no banco
         if (variation > file_off_range.TIME_ALERT) {
