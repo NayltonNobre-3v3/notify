@@ -68,9 +68,10 @@ function checkConditions() {
                 // Se existir e nÃ£o tive enviado o email entÃ£o calculo o tempo
                 else if (include >= 0) {
                     // Pego o meu horário atual e subtraio com o horário que estão no array
-                    const repeatItem = off_range_sensors.findIndex(
-                        (repeat) => repeat.ID === notif.ID
-                    );
+                    const repeatItem = include;
+                    // const repeatItem = off_range_sensors.findIndex(
+                    //     (repeat) => repeat.ID === notif.ID
+                    // );
                     let variacao = MomentProvider.compareInMinutes(current_date, off_range_sensors[repeatItem].time)
                     // Se estiver acima do valor que estÃ¡ no banco
                     if (variacao > notif.TIME) {
@@ -159,9 +160,7 @@ function checkConditions() {
                 // Se existir e nÃ£o tive enviado o email entÃ£o calculo o tempo
                 else if (include >= 0) {
                     // Pego o meu horário atual e subtraio com o horário que estão no array
-                    const repeatItem = off_range_sensors.findIndex(
-                        (repeat) => repeat.ID === notif.ID
-                    );
+                    const repeatItem = include
 
                     let variacao = MomentProvider.compareInMinutes(current_date, off_range_sensors[repeatItem].time)
                     // Se estiver acima do valor que estÃ¡ no banco
