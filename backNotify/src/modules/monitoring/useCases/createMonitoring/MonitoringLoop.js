@@ -1,11 +1,7 @@
 // Diretório
 const rootDIR = process.env.ROOT;
 const folders = ['sns', 'dir', 'mtd', 'eqp']
-// const DIR = "/mnt/fcir";
 import monitoring_files from "../../../../shared/utils/variables_api/monitoring-variables";
-
-// import { readAllDirs } from '../../../../shared/utils/readAndOrganizeFiles'
-
 class AlertLoop {
     constructor(NotificationService,readAllDirs) {
         this.NotificationService = NotificationService
