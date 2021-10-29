@@ -7,19 +7,19 @@ import {Router} from 'express'
 
 const notifRouter=Router()
 
-notifRouter.post('/notify/post-alert',(req,resp)=>{
+notifRouter.post('/post-alert',(req,resp)=>{
     return createNotification().handle(req,resp)
 })
-notifRouter.get('/notify/alert',(req,resp)=>{
+notifRouter.get('/alert',(req,resp)=>{
     return showNotifications().handle(req,resp)
 })
-notifRouter.get('/notify/alert/:id',(req,resp)=>{
+notifRouter.get('/alert/:id',(req,resp)=>{
     return showNotification().handle(req,resp)
 })
-notifRouter.delete('/notify/alert/:id',(req,resp)=>{
+notifRouter.delete('/alert/:id',(req,resp)=>{
     return deleteNotification().handle(req,resp)
 })
-notifRouter.put('/notify/alert/:id',(req,resp)=>{
+notifRouter.put('/alert/:id',(req,resp)=>{
     return updateNotification().handle(req,resp)
 })
 export {notifRouter}
