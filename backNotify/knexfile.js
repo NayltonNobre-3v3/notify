@@ -10,7 +10,7 @@ module.exports = {
     database: process.env.DATABASE,
   },
   migrations: {
-    directory: path.resolve(__dirname, "src", "database", "migrations"),
+    directory: path.resolve(__dirname, "src", "shared","infra","knex","migrations"),
   },
   useNullAsDefault: true,
 };

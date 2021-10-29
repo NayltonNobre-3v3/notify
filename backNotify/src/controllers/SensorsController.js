@@ -1,11 +1,11 @@
-import api from "../variables_api/monitoring-variables";
+import monitoringApi from "../shared/utils/variables_api/monitoring-variables";
 
 export default class SensorsController {
   async getSensors(Request, Response) {
     try {
       let data = [];
-      if (api.sensorMonitoring.length > 0) {
-        api.sensorMonitoring.map((e) => {
+      if (monitoringApi.files.sns.length > 0) {
+        monitoringApi.files.sns.map((e) => {
           data.push(e);
         });
       } else {
@@ -13,13 +13,14 @@ export default class SensorsController {
       }
       return Response.status(200).json(data);
     } catch (error) {
+      console.log('SensorController -> Error ao tentar carregar sensores')
       return Response.status(500).json(error);
     }
   }
   async getSensor(Request, Response) {
     const {id}=Request.params
     let data = [];
-    api.sensorMonitoring.map((e) => {
+    monitoringApi.files.sns.map((e) => {
       data.push(e);
     });
     const filter = data.filter((e) => e.ID === Number(id));

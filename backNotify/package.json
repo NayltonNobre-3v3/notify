@@ -5,7 +5,7 @@
   "main": "notify.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon  --ignore node_modules --exec babel-node src/server.js ",
+    "start": "nodemon  --ignore node_modules --exec babel-node src/shared/infra/http/server.js ",
     "knex:migrate": "knex --knexfile knexfile.js migrate:latest"
   },
   "nodemonConfig": {
@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
+    "express-async-errors": "^3.1.1",
     "jest": "^27.3.1"
   }
 }
