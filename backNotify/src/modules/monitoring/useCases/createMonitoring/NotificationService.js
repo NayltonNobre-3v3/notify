@@ -67,8 +67,8 @@ function checkConditions() {
                     subject: "Alertas da 3v3",
                     template_path,
                     context: {
-                        sensorName: file.NAME,
-                        cond: file_off_range.CONDITION,
+                        file_name: file.NAME,
+                        condition: file_off_range.CONDITION,
                         value: file_off_range.VALUE,
                         medition_type: file_off_range.MEDITION_TYPE,
                         value_json: file_off_range.VALUE_JSON,
