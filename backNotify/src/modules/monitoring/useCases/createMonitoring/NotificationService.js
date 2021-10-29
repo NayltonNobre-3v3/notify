@@ -41,12 +41,16 @@ function checkConditions() {
     }
     function removeFromRange(include) {
         let file=off_range_files[include]
-        if (include >= 0 && file.SEND_EMAIL === true) {
-            const filteredItems = off_range_files.filter((item) => {
-                return item.ID !== file.ID;
-            });
-            off_range_files = filteredItems;
-        }
+        // if (include >= 0 && file.SEND_EMAIL === true) {
+        //     const filteredItems = off_range_files.filter((item) => {
+        //         return item.ID !== file.ID;
+        //     });
+        //     off_range_files = filteredItems;
+        // }
+        const filteredItems = off_range_files.filter((item) => {
+            return item.ID !== file.ID;
+        });
+        off_range_files = filteredItems;
     }
     function updateOffRangeFiles(file,alert){
         off_range_files.map(
@@ -58,6 +62,8 @@ function checkConditions() {
         // Calcula a variação de tempo (minutos) em que o arquivo está acima ou abaixo da condição
         // estabelecida pelo o usuário
         let variation = MomentProvider.compareInMinutes(current_date, file_off_range.OFF_RANGE_DATE)
+        console.log(off_range_files)
+        console.log(`VARIATION do ${file.NAME} -> ${variation}`)
         // Se a variação do tempo do arquivo que está na condição  estabelecida para o alarme 
         //for maior do que o tempo especificado no banco
         if (variation > file_off_range.TIME_ALERT) {
@@ -130,8 +136,9 @@ function checkConditions() {
                         off_range.ID === alert.ID
                     );
                 });
-                removeFromRange(include)
-
+                if(include>=0){
+                    removeFromRange(include)
+                }
             }
         },
         async down(file, alert) {
@@ -168,7 +175,10 @@ function checkConditions() {
                         off_range.ID === alert.ID
                     );
                 });
-                removeFromRange(include)
+                if(include>=0){
+                    removeFromRange(include)
+                }
+
 
             }
         }
