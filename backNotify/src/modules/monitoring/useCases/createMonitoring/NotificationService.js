@@ -48,6 +48,11 @@ function checkConditions() {
             off_range_files = filteredItems;
         }
     }
+    function updateOffRangeFiles(file,alert){
+        off_range_files.map(
+            (e) => (e.VALUE_JSON = file.VALUE[alert.POSITION])
+        );
+    }
     async function verifyOffRangeFiles(repeatItem, alert, current_date, file) {
         let file_off_range=off_range_files[repeatItem]
         // Calcula a variação de tempo (minutos) em que o arquivo está acima ou abaixo da condição
@@ -79,9 +84,7 @@ function checkConditions() {
             }
         }
         // Se já existir e o valor do json for alterado (atualizado) irá atualizar o VALUE do array off_range_files
-        off_range_files.map(
-            (e) => (e.VALUE_JSON = file.VALUE[alert.POSITION])
-        );
+        updateOffRangeFiles(file,alert)
     }
     return {
         async up(file, alert) {

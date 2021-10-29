@@ -4,7 +4,7 @@ import showMonitFiles from '../../../../modules/monitoring/useCases/showMonitori
 
 const monitRouter=Router()
 
-monitRouter.get('/monit',(req,res)=>{
+monitRouter.get('/files',(req,res)=>{
     return showMonitFiles().handle(req,res)
 })
 
