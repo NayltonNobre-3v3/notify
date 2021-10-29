@@ -1,28 +1,47 @@
 import MailProvider from "../../../../shared/container/provider/MailProvider";
-import moment from "moment-timezone";
-
-import {NotificationRepository} from '../../../notifications/infra/Knex/repositories/NotificationRepository'
+import { NotificationRepository } from '../../../notifications/infra/Knex/repositories/NotificationRepository'
+import MomentProvider from '../../../../shared/container/provider/DateProvider/MomentProvider'
+import { resolve } from 'path'
 // Array momentâneo no qual irá guardar os dados que estão na condição especificada
+let off_range_sensors = [];
+let current_date = Date.now();
+let template_path = resolve(__dirname, '..', '..', '..', 'notifications', 'Views', 'emails', 'sensorAlert.hbs')
+
 
 async function NotificationService(monit_files) {
-    let off_range_sensors = [];
-    let current_date = Date.now();
-    const notificationRepository=new NotificationRepository()
+    const notificationRepository = new NotificationRepository()
     const notifications = await notificationRepository.show()
-
-    notifications.forEach((notif) => {
+    const check = checkConditions()
+    for(let notif of notifications){
         const sensor = monit_files.find(sensor => sensor.ID === notif.ID_SENSOR);
         current_date = Date.now();
         if (!sensor) {
-            throw "Sensor not found";
+            console.log("NotificationService -> Sensor not found")
+            continue
         }
+        switch (notif.CONDITION) {
+            case "ACIMA":
+                check.up(sensor, notif)
+                break;
+            case "ABAIXO":
+                check.down(sensor, notif)
+                break;
 
-        if (notif.CONDITION === "ACIMA") {
+            default:
+                break;
+        }
+    }
+}
+
+function checkConditions() {
+    return {
+        async up(sensor, notif) {
+            let include=null
             // Sensor com valor específico acima do que está no banco
             if (sensor.VALUE[notif.POSITION] > notif.VALUE) {
                 // Verificar se existe ou não os valores no array de sensores
                 //  que satisfazem tal condição
-                const include = off_range_sensors.findIndex((off_range) => {
+                include = off_range_sensors.findIndex((off_range) => {
                     return off_range.ID === notif.ID;
                 });
                 // Se nÃ£o existir no array irá adicioanar o sensor dentro da especificação
@@ -52,59 +71,34 @@ async function NotificationService(monit_files) {
                     const repeatItem = off_range_sensors.findIndex(
                         (repeat) => repeat.ID === notif.ID
                     );
-
-                    let variacao =
-                        moment(current_date).unix() -
-                        moment(off_range_sensors[repeatItem].time).unix();
+                    let variacao = MomentProvider.compareInMinutes(current_date, off_range_sensors[repeatItem].time)
                     // Se estiver acima do valor que estÃ¡ no banco
                     if (variacao > notif.TIME) {
                         // Mudar a variável email para true
                         // Se não tiver enviado o email
                         if (off_range_sensors[repeatItem].email === false) {
-                            moment;
-                            MailProvider.gmail.sendMail(
-                                {
-                                    from: "Alertas3v3@gmail.com",
-                                    to: notif.EMAIL,
-                                    template: "auth/sensorAlert",
-                                    subject: "Alerta de sensor! 3v3",
-                                    context: {
-                                        sensorName: sensor.NAME,
-                                        cond: notif.CONDITION,
-                                        value: notif.VALUE,
-                                        medition_type: notif.MEDITION_TYPE,
-                                        VALUE_JSON: sensor.VALUE[notif.POSITION],
-                                        unit: notif.UNIT,
-                                        start: moment(
-                                            moment(off_range_sensors[repeatItem].time)
-                                        )
-                                            .tz("America/Fortaleza")
-                                            .format("DD/MM/YYYY  HH:mm:ss"),
-                                        end: moment(moment(current_date))
-                                            .tz("America/Fortaleza")
-                                            .format("DD/MM/YYYY  HH:mm:ss"),
-                                    },
+                            await MailProvider.sendMail({
+                                to: notif.EMAIL,
+                                subject: "Alerta de sensor! 3v3",
+                                template_path,
+                                context: {
+                                    sensorName: sensor.NAME,
+                                    cond: notif.CONDITION,
+                                    value: notif.VALUE,
+                                    medition_type: notif.MEDITION_TYPE,
+                                    VALUE_JSON: sensor.VALUE[notif.POSITION],
+                                    unit: notif.UNIT,
+                                    start: MomentProvider.convertToTz(off_range_sensors[repeatItem].time),
+                                    end: MomentProvider.convertToTz(current_date)
                                 },
-                                (err) => {
-                                    if (err) {
-                                        console.log("ERROR AO ENVIAR O EMAIL ", err);
-                                    }
-                                    // console.log("EMAIL ENVIADO COM SUCESSO!");
-                                }
-                            );
+                            })
                             // Marco que enviei o email
                             off_range_sensors[repeatItem].email = true;
                             console.log("Condição acima -> EMAIL ENVIADO PARA -> ", off_range_sensors[repeatItem].EMAIL);
                             console.log(off_range_sensors[repeatItem]);
                         }
                     }
-                    // Se já estiver enviado o email então realizo X operação
-                    // if (off_range_sensors[repeatItem].email === true) {
-                    // }
-                }
-                // Se já existir e o valor do json for alterado (atualizado) irá atualizar o VALUE do array off_range_sensors
-                else if (include >= 0) {
-                    //
+                    // Se já existir e o valor do json for alterado (atualizado) irá atualizar o VALUE do array off_range_sensors
                     off_range_sensors.map(
                         (e) => (e.VALUE_JSON = sensor.VALUE[notif.POSITION])
                     );
@@ -114,7 +108,7 @@ async function NotificationService(monit_files) {
             //Se sair da faixa dos valores da condição ACIMA então irá apagar o registro do off_range_sensors
             // OBS: irá apagar somente o valor que sair da faixa, condição muito específica
             else {
-                const include = off_range_sensors.findIndex((off_range) => {
+                include = off_range_sensors.findIndex((off_range) => {
                     return (
                         off_range.ID === notif.ID
                     );
@@ -131,14 +125,14 @@ async function NotificationService(monit_files) {
                 }
                 return;
             }
-        }
-        //   CONDIÇÃO ABAIXO
-        else {
+        },
+        async down(sensor, notif) {
+            let include=null
             // Sensor com valor específico acima do que está no banco
             if (sensor.VALUE[notif.POSITION] < notif.VALUE) {
                 // Verificar se existe ou não os valores no array de sensores
                 //  que satisfazem tal condição
-                const include = off_range_sensors.findIndex((off_range) => {
+                include = off_range_sensors.findIndex((off_range) => {
                     return off_range.ID === notif.ID;
                 });
                 // Se nÃ£o existir no array irá adicioanar o sensor dentro da especificação
@@ -169,58 +163,33 @@ async function NotificationService(monit_files) {
                         (repeat) => repeat.ID === notif.ID
                     );
 
-                    let variacao =
-                        moment(current_date).unix() -
-                        moment(off_range_sensors[repeatItem].time).unix();
+                    let variacao = MomentProvider.compareInMinutes(current_date, off_range_sensors[repeatItem].time)
                     // Se estiver acima do valor que estÃ¡ no banco
                     if (variacao > notif.TIME) {
                         // Mudar a variável email para true
                         // Se não tiver enviado o email
                         if (off_range_sensors[repeatItem].email === false) {
-                            moment;
-                            MailProvider.gmail.sendMail.sendMail(
-                                {
-                                    from: "Alertas3v3@gmail.com",
-                                    to: notif.EMAIL,
-                                    template: "auth/sensorAlert",
-                                    subject: "Alerta de sensor! 3v3",
-                                    context: {
-                                        sensorName: sensor.NAME,
-                                        cond: notif.CONDITION,
-                                        value: notif.VALUE,
-                                        medition_type: notif.MEDITION_TYPE,
-                                        VALUE_JSON: sensor.VALUE[notif.POSITION],
-                                        unit: notif.UNIT,
-                                        start: moment(
-                                            moment(off_range_sensors[repeatItem].time)
-                                        )
-                                            .tz("America/Fortaleza")
-                                            .format("DD/MM/YYYY  HH:mm:ss"),
-                                        end: moment(moment(current_date))
-                                            .tz("America/Fortaleza")
-                                            .format("DD/MM/YYYY  HH:mm:ss"),
-                                    },
+                            await MailProvider.sendMail({
+                                to: notif.EMAIL,
+                                subject: "Alerta de sensor! 3v3",
+                                template_path,
+                                context: {
+                                    sensorName: sensor.NAME,
+                                    cond: notif.CONDITION,
+                                    value: notif.VALUE,
+                                    medition_type: notif.MEDITION_TYPE,
+                                    VALUE_JSON: sensor.VALUE[notif.POSITION],
+                                    unit: notif.UNIT,
+                                    start: MomentProvider.convertToTz(off_range_sensors[repeatItem].time),
+                                    end: MomentProvider.convertToTz(current_date),
                                 },
-                                (err) => {
-                                    if (err) {
-                                        console.log("ERROR AO ENVIAR O EMAIL ", err);
-                                    }
-                                    // console.log("EMAIL ENVIADO COM SUCESSO!");
-                                }
-                            );
+                            })
                             // Marco que enviei o email
                             off_range_sensors[repeatItem].email = true;
                             console.log("Condição abaixo -> EMAIL ENVIADO PARA -> ", off_range_sensors[repeatItem].EMAIL);
                             console.log(off_range_sensors[repeatItem]);
                         }
                     }
-                    // Se já estiver enviado o email então realizo X operação
-                    // if (off_range_sensors[repeatItem].email === true) {
-                    // }
-                }
-                // Se já existir e o valor do json for alterado (atualizado) irá atualizar o VALUE do array off_range_sensors
-                else if (include >= 0) {
-                    //
                     off_range_sensors.map(
                         (e) => (e.VALUE_JSON = sensor.VALUE[notif.POSITION])
                     );
@@ -248,7 +217,7 @@ async function NotificationService(monit_files) {
                 return;
             }
         }
-    });
+    }
 }
 
-export { NotificationService}
+export { NotificationService }

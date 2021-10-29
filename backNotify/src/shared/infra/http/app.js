@@ -36,7 +36,7 @@ class Notify {
   }
   routes() {
     // this.app.use(route);
-    this.app.use(notifRouter);
+    this.app.use('/notify',notifRouter);
     this.app.use(monitRouter)
   }
   set listen(PORT) {

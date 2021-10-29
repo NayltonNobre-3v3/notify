@@ -1,7 +1,7 @@
-import {GmailClient} from './implementations/GmailProvider'
+import {GmailProvider} from './implementations/GmailProvider'
 
 const mailProvider={
-    gmail:GmailClient
+    gmail:new GmailProvider()
 }
 
-export default mailProvider
+export default mailProvider['gmail']

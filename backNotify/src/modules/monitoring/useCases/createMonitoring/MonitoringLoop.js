@@ -1,5 +1,5 @@
 // Diretório
-const rootDIR = "C:/Users/davis/Documents/Sirv4Tests/fcir";
+const rootDIR = process.env.ROOT;
 const folders = ['sns', 'dir', 'mtd', 'eqp']
 // const DIR = "/mnt/fcir";
 import monitoring_files from "../../../../shared/utils/variables_api/monitoring-variables";
