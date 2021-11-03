@@ -18,15 +18,17 @@ class AlertLoop {
                 })
                 .then((files) => {
                     //Organizar os arquivos para leitura local 
-                    let only_files = []
-                    for (let items of Object.values(files)) {
-                        if (items.length) {
-                            items.forEach(file => {
-                                only_files.push(file)
-                            });
-                        }
-                    }
-                    return only_files
+                    // let only_files = []
+                    // for (let items of Object.values(files)) {
+                    //     if (items.length) {
+                    //         items.forEach(file => {
+                    //             only_files.push(file)
+                    //         });
+                    //     }
+                    // }
+                    // return only_files
+     
+                    return files
                 })
                 .then((monit_files) => this.NotificationService(monit_files))
                 .catch((err) => console.log(err))
