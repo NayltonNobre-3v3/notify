@@ -1,3 +1,5 @@
+import MomentProvider from '../../../../../shared/container/provider/DateProvider/MomentProvider'
+// Array momentâneo no qual irá guardar os dados que estão na condição especificada
 let off_range_files = [];
 
 function addToRange(data) {
@@ -17,9 +19,100 @@ function removeFromRange(include) {
     });
     off_range_files = filteredItems;
 }
+function updateOffRangeFiles(file, alert) {
+    off_range_files.map((OFF_RANGE_FILE) => {
+        // Se for sensor irá atualizar o valor do json dos sensores dentro do array
+        if (OFF_RANGE_FILE.TYPE === 'sns') {
+            return OFF_RANGE_FILE.VALUE_JSON = file.VALUE[alert.POSITION]
+        }
+        if (OFF_RANGE_FILE.TYPE === 'dir') {
+            if (OFF_RANGE_FILE.MEDITION_TYPE === 'STATUS') {
+                return OFF_RANGE_FILE.VALUE_JSON = file.RF.stat
 
+            }
+            //SE FOR ACK
+            /*if(OFF_RANGE_FILE.MEDITION_TYPE === 'ACK'){
+                return 
+
+            }*/
+            return OFF_RANGE_FILE.VALUE_JSON = file[alert.MEDITION_TYPE]
+        }
+        if (OFF_RANGE_FILE.TYPE === 'mtd') {
+            if (OFF_RANGE_FILE.MEDITION_TYPE === 'STATUS') {
+                return OFF_RANGE_FILE.VALUE_JSON = file.RF.stat
+
+            }
+            //SE FOR ACK
+            /*if(OFF_RANGE_FILE.MEDITION_TYPE === 'ACK'){
+                return 
+
+            }*/
+            return OFF_RANGE_FILE.VALUE_JSON = file[alert.MEDITION_TYPE]
+        }
+        if (OFF_RANGE_FILE.TYPE === 'eqp') {
+            return OFF_RANGE_FILE.VALUE_JSON = file[alert.MEDITION_TYPE]
+        }
+
+    });
+}
+async function verifyOffRangeFiles(repeatItem, alert, current_date, file) {
+    let file_off_range = off_range_files[repeatItem];
+    // Calcula a variação de tempo (minutos) em que o arquivo está acima ou abaixo da condição
+    // estabelecida pelo o usuário
+    let variation = MomentProvider.compareInMinutes(
+        current_date,
+        file_off_range.OFF_RANGE_DATE
+    );
+    console.log(off_range_files);
+    console.log(`VARIATION do ${alert.ID} -> ${variation}`);
+    // Se a variação do tempo do arquivo que está na condição  estabelecida para o alarme
+    //for maior do que o tempo especificado no banco
+    if (variation > file_off_range.TIME_ALERT) {
+        if (file_off_range.SEND_EMAIL === false) {
+            // await MailProvider.sendMail({
+            //     to: file_off_range.EMAIL,
+            //     subject: "Alertas da 3v3",
+            //     template_path,
+            //     context: {
+            //         file_name: file.NAME,
+            //         condition: file_off_range.CONDITION,
+            //         value: file_off_range.VALUE,
+            //         medition_type: file_off_range.MEDITION_TYPE,
+            //         value_json: file_off_range.VALUE_JSON,
+            //         unit: file_off_range.UNIT,
+            //         start: MomentProvider.convertToTz(file_off_range.OFF_RANGE_DATE),
+            //         end: MomentProvider.convertToTz(current_date),
+            //     },
+            // })
+
+            console.log(`----- EMAIL ---------- `, {
+                file_name: file.NAME,
+                condition: file_off_range.CONDITION,
+                value: file_off_range.VALUE,
+                medition_type: file_off_range.MEDITION_TYPE,
+                value_json: file_off_range.VALUE_JSON,
+                // unit: file_off_range.UNIT,
+                start: MomentProvider.convertToTz(file_off_range.OFF_RANGE_DATE),
+                end: MomentProvider.convertToTz(current_date),
+            });
+
+            // Marca que enviou o email
+            file_off_range.SEND_EMAIL = true;
+
+            console.log(
+                `CONDIÇÃO: ${file_off_range.CONDITION}, EMAIL ENVIADO PARA -> ${file_off_range.EMAIL}`
+            );
+            console.log(file_off_range);
+        }
+    }
+    // Se já existir e o valor do json for alterado (atualizado) irá atualizar o VALUE do array off_range_files
+    updateOffRangeFiles(file, alert);
+}
+
+// file -> Arquivo lido do json
+//alert-> alerta do banco de dados
 class MonitSns {
-    startMonitoring(monit_files, alert, current_date) {
+    async startMonitoring(monit_files, alert, current_date) {
         this.alert = alert;
         this.current_date = current_date;
         this.file = monit_files[this.alert.TYPE].find((file) => {
@@ -33,10 +126,10 @@ class MonitSns {
 
         switch (this.alert.CONDITION) {
             case "ACIMA":
-                this.up();
+                await this.up();
                 break;
             case "ABAIXO":
-                this.down();
+                await this.down();
                 break;
             default:
                 break;
@@ -54,6 +147,7 @@ class MonitSns {
                 addToRange({
                     ID: this.alert.ID,
                     ID_REF: this.alert.ID_RED,
+                    TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
                     //Se foi enviado o e-mail ou não
                     SEND_EMAIL: false,
@@ -98,6 +192,7 @@ class MonitSns {
                 addToRange({
                     ID: this.alert.ID,
                     ID_REF: this.alert.ID_REF,
+                    TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
                     SEND_EMAIL: false,
                     OFF_RANGE_DATE: this.current_date,
@@ -124,8 +219,8 @@ class MonitSns {
         }
     }
 }
-class monitDir {
-    startMonitoring(monit_files, alert, current_date) {
+class MonitDir {
+    async startMonitoring(monit_files, alert, current_date) {
         this.alert = alert;
         this.current_date = current_date;
         this.file = monit_files["dir"].find((file) => {
@@ -139,10 +234,10 @@ class monitDir {
 
         switch (this.alert.CONDITION) {
             case "ACIMA":
-                this.up();
+                await this.up();
                 break;
             case "ABAIXO":
-                this.down();
+                await this.down();
                 break;
             default:
                 break;
@@ -160,6 +255,7 @@ class monitDir {
                     addToRange({
                         ID: this.alert.ID,
                         ID_REF: this.alert.ID_REF,
+                        TYPE: this.alert.TYPE,
                         CONDITION: this.alert.CONDITION,
                         //Se foi enviado o e-mail ou não
                         SEND_EMAIL: false,
@@ -195,14 +291,14 @@ class monitDir {
                     removeFromRange(include);
                 }
             }
-            
+
             return
         }
-        if (this.alert.MEDITION_TYPE === "ACK") {         
+        if (this.alert.MEDITION_TYPE === "ACK") {
             //IMPLEMENTAR LÓGICA DE MONITORAR ACK   
             return
         }
-        
+
 
         // Arquivo com valor específico acima do que está no banco
         if (this.file[this.alert.MEDITION_TYPE] > this.alert.VALUE) {
@@ -214,6 +310,7 @@ class monitDir {
                 addToRange({
                     ID: this.alert.ID,
                     ID_REF: this.alert.ID_REF,
+                    TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
                     //Se foi enviado o e-mail ou não
                     SEND_EMAIL: false,
@@ -259,6 +356,7 @@ class monitDir {
                     addToRange({
                         ID: this.alert.ID,
                         ID_REF: this.alert.ID_REF,
+                        TYPE: this.alert.TYPE,
                         CONDITION: this.alert.CONDITION,
                         //Se foi enviado o e-mail ou não
                         SEND_EMAIL: false,
@@ -294,11 +392,11 @@ class monitDir {
                     removeFromRange(include);
                 }
             }
-            
+
             return
         }
 
-        if (this.alert.MEDITION_TYPE === "ACK") {         
+        if (this.alert.MEDITION_TYPE === "ACK") {
             //IMPLEMENTAR LÓGICA DE MONITORAR ACK   
             return
         }
@@ -311,6 +409,7 @@ class monitDir {
                 addToRange({
                     ID: this.alert.ID,
                     ID_REF: this.alert.ID_REF,
+                    TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
                     SEND_EMAIL: false,
                     OFF_RANGE_DATE: this.current_date,
@@ -337,8 +436,8 @@ class monitDir {
         }
     }
 }
-class monitMtd {
-    startMonitoring(monit_files, alert, current_date) {
+class MonitMtd {
+    async startMonitoring(monit_files, alert, current_date) {
         this.alert = alert;
         this.current_date = current_date;
         this.file = monit_files["mtd"].find((file) => {
@@ -352,10 +451,10 @@ class monitMtd {
 
         switch (this.alert.CONDITION) {
             case "ACIMA":
-                this.up();
+                await this.up();
                 break;
             case "ABAIXO":
-                this.down();
+                await this.down();
                 break;
             default:
                 break;
@@ -373,6 +472,7 @@ class monitMtd {
                     addToRange({
                         ID: this.alert.ID,
                         ID_REF: this.alert.ID_REF,
+                        TYPE: this.alert.TYPE,
                         CONDITION: this.alert.CONDITION,
                         //Se foi enviado o e-mail ou não
                         SEND_EMAIL: false,
@@ -408,14 +508,14 @@ class monitMtd {
                     removeFromRange(include);
                 }
             }
-            
+
             return
         }
-        if (this.alert.MEDITION_TYPE === "ACK") {         
+        if (this.alert.MEDITION_TYPE === "ACK") {
             //IMPLEMENTAR LÓGICA DE MONITORAR ACK   
             return
         }
-        
+
 
         // Arquivo com valor específico acima do que está no banco
         if (this.file[this.alert.MEDITION_TYPE] > this.alert.VALUE) {
@@ -427,6 +527,7 @@ class monitMtd {
                 addToRange({
                     ID: this.alert.ID,
                     ID_REF: this.alert.ID_REF,
+                    TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
                     //Se foi enviado o e-mail ou não
                     SEND_EMAIL: false,
@@ -472,6 +573,7 @@ class monitMtd {
                     addToRange({
                         ID: this.alert.ID,
                         ID_REF: this.alert.ID_REF,
+                        TYPE: this.alert.TYPE,
                         CONDITION: this.alert.CONDITION,
                         //Se foi enviado o e-mail ou não
                         SEND_EMAIL: false,
@@ -507,11 +609,11 @@ class monitMtd {
                     removeFromRange(include);
                 }
             }
-            
+
             return
         }
 
-        if (this.alert.MEDITION_TYPE === "ACK") {         
+        if (this.alert.MEDITION_TYPE === "ACK") {
             //IMPLEMENTAR LÓGICA DE MONITORAR ACK   
             return
         }
@@ -524,6 +626,7 @@ class monitMtd {
                 addToRange({
                     ID: this.alert.ID,
                     ID_REF: this.alert.ID_REF,
+                    TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
                     SEND_EMAIL: false,
                     OFF_RANGE_DATE: this.current_date,
@@ -551,8 +654,8 @@ class monitMtd {
     }
 }
 
-class monitEqp {
-    startMonitoring(monit_files, alert, current_date) {
+class MonitEqp {
+    async startMonitoring(monit_files, alert, current_date) {
         this.alert = alert;
         this.current_date = current_date;
         this.file = monit_files[this.alert.TYPE].find((file) => {
@@ -565,25 +668,25 @@ class monitEqp {
         }
 
         //Se o alerta for para FLOW, então tem que existir o campo HYDRO no json
-        if(this.alert.MEDITION_TYPE =="FLOW"  && !this.file["HYDRO"]){
+        if (this.alert.MEDITION_TYPE == "FLOW" && !this.file["HYDRO"]) {
             console.log('[ERROR] - Não é possível monitorar FLOW em equipamentos sem HYDRO!')
             return
         }
 
         switch (this.alert.CONDITION) {
             case "ACIMA":
-                this.up();
+                await this.up();
                 break;
             case "ABAIXO":
-                this.down();
+                await this.down();
                 break;
             default:
                 break;
         }
     }
-    async up(){
+    async up() {
         let include = null;
-        
+
         // Arquivo com valor específico acima do que está no banco
         if (this.file[this.alert.MEDITION_TYPE] > this.alert.VALUE) {
             // índice do arquivo que está na condição para ser monitorado e alertado
@@ -594,6 +697,7 @@ class monitEqp {
                 addToRange({
                     ID: this.alert.ID,
                     ID_REF: this.alert.ID_REF,
+                    TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
                     //Se foi enviado o e-mail ou não
                     SEND_EMAIL: false,
@@ -628,7 +732,7 @@ class monitEqp {
         }
 
     }
-    async down(){
+    async down() {
         let include = null;
         if (this.file[this.alert.MEDITION_TYPE] < this.alert.VALUE) {
             include = off_range_files.findIndex((off_range) => {
@@ -638,6 +742,7 @@ class monitEqp {
                 addToRange({
                     ID: this.alert.ID,
                     ID_REF: this.alert.ID_REF,
+                    TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
                     SEND_EMAIL: false,
                     OFF_RANGE_DATE: this.current_date,
@@ -665,3 +770,12 @@ class monitEqp {
 
     }
 }
+
+
+const monitoring={
+    Sensor:new MonitSns(),
+    Dir:new MonitDir(),
+    Eqp:new MonitEqp(),
+    Mtd:new MonitMtd()
+}
+export{monitoring}
