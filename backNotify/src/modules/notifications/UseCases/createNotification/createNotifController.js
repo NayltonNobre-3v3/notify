@@ -27,7 +27,7 @@ class CreateNofitController {
             NOTE,
             MEDITION_TYPE,
             CONDITION,
-            POSITION:POSITION?POSITION:null,
+            POSITION:POSITION>=0?POSITION:null,
         })
         return Response.status(201).json({msg:"Notification created successfully"});
         

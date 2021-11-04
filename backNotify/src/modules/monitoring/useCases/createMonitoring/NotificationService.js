@@ -1,4 +1,3 @@
-// import MailProvider from "../../../../shared/container/provider/MailProvider";
 import { NotificationRepository } from "../../../notifications/infra/Knex/repositories/NotificationRepository";
 import { monitoring } from "./monitoringFiles/MonitFiles";
 let current_date = Date.now();
@@ -8,6 +7,7 @@ async function NotificationService(monit_files) {
     const notifications = await notificationRepository.show();
     for (let alert of notifications) {
         current_date = Date.now();
+        console.log(alert.TYPE)
         switch (alert.TYPE) {
             case "sns":
                 monitoring.Sensor.startMonitoring(monit_files,alert,current_date)

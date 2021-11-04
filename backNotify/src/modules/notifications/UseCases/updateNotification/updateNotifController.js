@@ -29,7 +29,7 @@ class UpdateNotifController {
             NOTE,
             MEDITION_TYPE,
             CONDITION,
-            POSITION:POSITION?POSITION:null,
+            POSITION:POSITION>=0?POSITION:null,
         })
         return Response.status(200).json({ msg: "Notification Updated successfully" });
 
