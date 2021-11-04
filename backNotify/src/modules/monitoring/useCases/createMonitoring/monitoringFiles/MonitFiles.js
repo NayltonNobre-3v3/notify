@@ -20,51 +20,55 @@ function removeFromRange(include) {
     off_range_files = filteredItems;
 }
 function updateOffRangeFiles(file, alert) {
-    off_range_files.map((OFF_RANGE_FILE) => {
-        // Se for sensor irá atualizar o valor do json dos sensores dentro do array
-        if (OFF_RANGE_FILE.TYPE === 'sns') {
-            return OFF_RANGE_FILE.VALUE_JSON = file.VALUE[alert.POSITION]
+    const file_off=off_range_files.find(off=>off.ID==alert.ID)
+    if(file_off.TYPE==='sns'){
+        file_off.VALUE_JSON=file.VALUE[alert.POSITION]
+        return
+    }
+    if(file_off.TYPE==='dir'){
+        if(file_off.MEDITION_TYPE==="STATUS"){
+            file_off.VALUE_JSON=file.RF.stat
+            return
         }
-        if (OFF_RANGE_FILE.TYPE === 'dir') {
-            if (OFF_RANGE_FILE.MEDITION_TYPE === 'STATUS') {
-                return OFF_RANGE_FILE.VALUE_JSON = file.RF.stat
-
-            }
-            //SE FOR ACK
-            /*if(OFF_RANGE_FILE.MEDITION_TYPE === 'ACK'){
-                return 
-
-            }*/
-            return OFF_RANGE_FILE.VALUE_JSON = file[alert.MEDITION_TYPE]
+         //SE FOR ACK
+        /*if(file_off.MEDITION_TYPE === 'ACK'){
+            return 
+        }*/
+        file_off.VALUE_JSON=file[alert.MEDITION_TYPE]
+        return
+        
+    }
+    if(file_off.TYPE==='mtd'){
+        if(file_off.MEDITION_TYPE==="STATUS"){
+            file_off.VALUE_JSON=file.RF.stat
+            return
         }
-        if (OFF_RANGE_FILE.TYPE === 'mtd') {
-            if (OFF_RANGE_FILE.MEDITION_TYPE === 'STATUS') {
-                return OFF_RANGE_FILE.VALUE_JSON = file.RF.stat
+         //SE FOR ACK
+        /*if(file_off.MEDITION_TYPE === 'ACK'){
+            return 
+        }*/
+        file_off.VALUE_JSON=file[alert.MEDITION_TYPE]
+        return
+    }
+    if(file_off.TYPE==='eqp'){
+        file_off.VALUE_JSON=file[alert.MEDITION_TYPE]
+        return
 
-            }
-            //SE FOR ACK
-            /*if(OFF_RANGE_FILE.MEDITION_TYPE === 'ACK'){
-                return 
-
-            }*/
-            return OFF_RANGE_FILE.VALUE_JSON = file[alert.MEDITION_TYPE]
-        }
-        if (OFF_RANGE_FILE.TYPE === 'eqp') {
-            return OFF_RANGE_FILE.VALUE_JSON = file[alert.MEDITION_TYPE]
-        }
-
-    });
+    }
+    
 }
 async function verifyOffRangeFiles(repeatItem, alert, current_date, file) {
     let file_off_range = off_range_files[repeatItem];
+    
     // Calcula a variação de tempo (minutos) em que o arquivo está acima ou abaixo da condição
     // estabelecida pelo o usuário
     let variation = MomentProvider.compareInMinutes(
         current_date,
         file_off_range.OFF_RANGE_DATE
     );
-    console.log(off_range_files);
-    console.log(`VARIATION do ${alert.ID} -> ${variation}`);
+    // console.log('OFF RANGE FILES -> ',off_range_files);
+    // console.log(`VARIATION do ${alert.ID} -> ${variation}`);
+
     // Se a variação do tempo do arquivo que está na condição  estabelecida para o alarme
     //for maior do que o tempo especificado no banco
     if (variation > file_off_range.TIME_ALERT) {
@@ -86,12 +90,11 @@ async function verifyOffRangeFiles(repeatItem, alert, current_date, file) {
             // })
 
             console.log(`----- EMAIL ---------- `, {
-                file_name: file.NAME,
+                file_name: alert.TYPE!=="dir" && alert.TYPE!=="mtd" ? file.NAME:`DIR-${file['ID']}`,
                 condition: file_off_range.CONDITION,
                 value: file_off_range.VALUE,
                 medition_type: file_off_range.MEDITION_TYPE,
                 value_json: file_off_range.VALUE_JSON,
-                // unit: file_off_range.UNIT,
                 start: MomentProvider.convertToTz(file_off_range.OFF_RANGE_DATE),
                 end: MomentProvider.convertToTz(current_date),
             });
@@ -115,7 +118,7 @@ class MonitSns {
     async startMonitoring(monit_files, alert, current_date) {
         this.alert = alert;
         this.current_date = current_date;
-        this.file = monit_files[this.alert.TYPE].find((file) => {
+        this.file = monit_files["sns"].find((file) => {
             return file.ID === Number(this.alert.ID_REF);
         });
 
@@ -157,7 +160,6 @@ class MonitSns {
                     //   VALOR ATUAL DO SENSOR
                     VALUE_JSON: this.file.VALUE[this.alert.POSITION],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
-                    // UNIT: alert.UNIT,
                     TIME_ALERT: this.alert.TIME,
                     POSITION: this.alert.POSITION,
                     EMAIL: this.alert.EMAIL,
@@ -199,7 +201,6 @@ class MonitSns {
                     VALUE: this.alert.VALUE,
                     VALUE_JSON: this.file.VALUE[this.alert.POSITION],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
-                    // UNIT: alert.UNIT,
                     TIME_ALERT: this.alert.TIME,
                     POSITION: this.alert.POSITION,
                     EMAIL: this.alert.EMAIL,
@@ -223,6 +224,7 @@ class MonitDir {
     async startMonitoring(monit_files, alert, current_date) {
         this.alert = alert;
         this.current_date = current_date;
+        // console.log(monit_files["dir"])
         this.file = monit_files["dir"].find((file) => {
             return file.ID === this.alert.ID_REF;
         });
@@ -231,7 +233,6 @@ class MonitDir {
             console.log(`[ERROR] - Não foi possível encontrar o dispositivo com o ID=${this.alert.ID_REF} igual ao do alerta`);
             return;
         }
-
         switch (this.alert.CONDITION) {
             case "ACIMA":
                 await this.up();
@@ -267,7 +268,7 @@ class MonitDir {
                         MEDITION_TYPE: this.alert.MEDITION_TYPE,
                         // UNIT: alert.UNIT,
                         TIME_ALERT: this.alert.TIME,
-                        // POSITION: alert.POSITION,
+                        POSITION: null,
                         EMAIL: this.alert.EMAIL,
                         NAME: this.alert.NAME,
                         CREATED_ALERT: this.alert.CREATED_AT,
@@ -299,7 +300,7 @@ class MonitDir {
             return
         }
 
-
+        
         // Arquivo com valor específico acima do que está no banco
         if (this.file[this.alert.MEDITION_TYPE] > this.alert.VALUE) {
             // índice do arquivo que está na condição para ser monitorado e alertado
@@ -345,13 +346,14 @@ class MonitDir {
         }
     }
     async down() {
+        
         let include = null;
-
         if (this.alert.MEDITION_TYPE === "STATUS") {
             if (this.file.RF.stat < this.alert.VALUE) {
                 include = off_range_files.findIndex((off_range) => {
                     return off_range.ID === this.alert.ID;
                 });
+                
                 if (include < 0) {
                     addToRange({
                         ID: this.alert.ID,
@@ -400,7 +402,6 @@ class MonitDir {
             //IMPLEMENTAR LÓGICA DE MONITORAR ACK   
             return
         }
-
         if (this.file[this.alert.MEDITION_TYPE] < this.alert.VALUE) {
             include = off_range_files.findIndex((off_range) => {
                 return off_range.ID === this.alert.ID;
@@ -418,7 +419,7 @@ class MonitDir {
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
                     // UNIT: alert.UNIT,
                     TIME_ALERT: this.alert.TIME,
-                    // POSITION: alert.POSITION,
+                    POSITION: null,
                     EMAIL: this.alert.EMAIL,
                     NAME: this.alert.NAME,
                     CREATED_ALERT: this.alert.CREATED_AT,
@@ -708,7 +709,7 @@ class MonitEqp {
                     VALUE_JSON: this.file[this.alert.MEDITION_TYPE],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
                     TIME_ALERT: this.alert.TIME,
-                    // POSITION: alert.POSITION,
+                    POSITION: null,
                     EMAIL: this.alert.EMAIL,
                     NAME: this.alert.NAME,
                     CREATED_ALERT: this.alert.CREATED_AT,
@@ -751,7 +752,7 @@ class MonitEqp {
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
                     // UNIT: alert.UNIT,
                     TIME_ALERT: this.alert.TIME,
-                    // POSITION: alert.POSITION,
+                    POSITION: null,
                     EMAIL: this.alert.EMAIL,
                     NAME: this.alert.NAME,
                     CREATED_ALERT: this.alert.CREATED_AT,
