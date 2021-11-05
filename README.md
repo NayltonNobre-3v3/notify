@@ -8,7 +8,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 - [Knex](http://knexjs.org/)
 
 ### Utilizando o Server
-#É necessário criar um arquivo .env com base no modelo de arquivo .env-example contendo as configurações necessário para o funcionamento do servidor
+É necessário criar um arquivo .env com base no modelo de arquivo .env-example contendo as configurações necessário para o funcionamento do servidor
 ```sh
   HOST=Host do banco de dados
   USER= Usuário do banco de dados
