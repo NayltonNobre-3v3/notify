@@ -1,7 +1,6 @@
 import MomentProvider from '../../../../../shared/container/provider/DateProvider/MomentProvider'
 import {off_range_files,addToRange,removeFromRange,verifyOffRangeFiles} from '../../../../../shared/utils/monitoring_api/functions'
 
-
 // file -> Arquivo lido do json
 //alert-> alerta do banco de dados
 class MonitSns {
@@ -46,11 +45,13 @@ class MonitSns {
                     SEND_EMAIL: false,
                     //Registra o tempo que chegou na condição
                     OFF_RANGE_DATE: this.current_date,
+                    //VALOR (VALUE) DO ALERTA 
                     VALUE: this.alert.VALUE,
-                    //   VALOR ATUAL DO SENSOR
+                    //   VALOR ATUAL DO ARQUIVO (Baseado no json)
                     VALUE_JSON: this.file.VALUE[this.alert.POSITION],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
                     TIME_ALERT: this.alert.TIME,
+                    //Indicar qual o valor do campo VALUE do json de sensores (Só para sensores)
                     POSITION: this.alert.POSITION,
                     EMAIL: this.alert.EMAIL,
                     NAME: this.alert.NAME,
@@ -114,7 +115,6 @@ class MonitDir {
     async startMonitoring(monit_files, alert, current_date) {
         this.alert = alert;
         this.current_date = current_date;
-        // console.log(monit_files["dir"])
         this.file = monit_files["dir"].find((file) => {
             return file.ID === this.alert.ID_REF;
         });
@@ -148,15 +148,11 @@ class MonitDir {
                         ID_REF: this.alert.ID_REF,
                         TYPE: this.alert.TYPE,
                         CONDITION: this.alert.CONDITION,
-                        //Se foi enviado o e-mail ou não
                         SEND_EMAIL: false,
-                        //Registra o tempo que chegou na condição
                         OFF_RANGE_DATE: this.current_date,
                         VALUE: this.alert.VALUE,
-                        //   VALOR ATUAL DO SENSOR
                         VALUE_JSON: this.file.RF.stat,
                         MEDITION_TYPE: this.alert.MEDITION_TYPE,
-                        // UNIT: alert.UNIT,
                         TIME_ALERT: this.alert.TIME,
                         POSITION: null,
                         EMAIL: this.alert.EMAIL,
@@ -164,7 +160,6 @@ class MonitDir {
                         CREATED_ALERT: this.alert.CREATED_AT,
                     });
                 }
-                // Se existir e nÃ£o tive enviado o email entÃo calcula o tempo que está naquela condição esperada
                 else if (include >= 0) {
                     verifyOffRangeFiles(
                         include,
@@ -190,10 +185,7 @@ class MonitDir {
             return
         }
 
-        
-        // Arquivo com valor específico acima do que está no banco
         if (this.file[this.alert.MEDITION_TYPE] > this.alert.VALUE) {
-            // índice do arquivo que está na condição para ser monitorado e alertado
             include = off_range_files.findIndex((off_range) => {
                 return off_range.ID === this.alert.ID;
             });
@@ -203,29 +195,22 @@ class MonitDir {
                     ID_REF: this.alert.ID_REF,
                     TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
-                    //Se foi enviado o e-mail ou não
                     SEND_EMAIL: false,
-                    //Registra o tempo que chegou na condição
                     OFF_RANGE_DATE: this.current_date,
                     VALUE: this.alert.VALUE,
-                    //   VALOR ATUAL DO SENSOR
                     VALUE_JSON: this.file[this.alert.MEDITION_TYPE],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
                     TIME_ALERT: this.alert.TIME,
-                    // POSITION: alert.POSITION,
                     EMAIL: this.alert.EMAIL,
                     NAME: this.alert.NAME,
+                    POSITION: null,
                     CREATED_ALERT: this.alert.CREATED_AT,
                 });
             }
-            // Se existir e nÃ£o tive enviado o email entÃo calcula o tempo que está naquela condição esperada
             else if (include >= 0) {
                 verifyOffRangeFiles(include, this.alert, this.current_date, this.file);
             }
         }
-
-        //Se sair da faixa dos valores da condição ACIMA então irá apagar o registro do off_range_files
-        // OBS: irá apagar somente o valor que sair da faixa, condição muito específica
         else {
             include = off_range_files.findIndex((off_range) => {
                 return off_range.ID === this.alert.ID;
@@ -250,23 +235,18 @@ class MonitDir {
                         ID_REF: this.alert.ID_REF,
                         TYPE: this.alert.TYPE,
                         CONDITION: this.alert.CONDITION,
-                        //Se foi enviado o e-mail ou não
                         SEND_EMAIL: false,
-                        //Registra o tempo que chegou na condição
                         OFF_RANGE_DATE: this.current_date,
                         VALUE: this.alert.VALUE,
-                        //   VALOR ATUAL DO SENSOR
                         VALUE_JSON: this.file.RF.stat,
                         MEDITION_TYPE: this.alert.MEDITION_TYPE,
-                        // UNIT: alert.UNIT,
                         TIME_ALERT: this.alert.TIME,
-                        // POSITION: alert.POSITION,
+                        POSITION: null,
                         EMAIL: this.alert.EMAIL,
                         NAME: this.alert.NAME,
                         CREATED_ALERT: this.alert.CREATED_AT,
                     });
                 }
-                // Se existir e nÃ£o tive enviado o email entÃo calcula o tempo que está naquela condição esperada
                 else if (include >= 0) {
                     verifyOffRangeFiles(
                         include,
@@ -307,7 +287,6 @@ class MonitDir {
                     VALUE: this.alert.VALUE,
                     VALUE_JSON: this.file[this.alert.MEDITION_TYPE],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
-                    // UNIT: alert.UNIT,
                     TIME_ALERT: this.alert.TIME,
                     POSITION: null,
                     EMAIL: this.alert.EMAIL,
@@ -365,23 +344,18 @@ class MonitMtd {
                         ID_REF: this.alert.ID_REF,
                         TYPE: this.alert.TYPE,
                         CONDITION: this.alert.CONDITION,
-                        //Se foi enviado o e-mail ou não
                         SEND_EMAIL: false,
-                        //Registra o tempo que chegou na condição
                         OFF_RANGE_DATE: this.current_date,
                         VALUE: this.alert.VALUE,
-                        //   VALOR ATUAL DO SENSOR
                         VALUE_JSON: this.file.RF.stat,
                         MEDITION_TYPE: this.alert.MEDITION_TYPE,
-                        // UNIT: alert.UNIT,
                         TIME_ALERT: this.alert.TIME,
-                        // POSITION: alert.POSITION,
+                        POSITION: null,
                         EMAIL: this.alert.EMAIL,
                         NAME: this.alert.NAME,
                         CREATED_ALERT: this.alert.CREATED_AT,
                     });
                 }
-                // Se existir e nÃ£o tive enviado o email entÃo calcula o tempo que está naquela condição esperada
                 else if (include >= 0) {
                     verifyOffRangeFiles(
                         include,
@@ -407,10 +381,7 @@ class MonitMtd {
             return
         }
 
-
-        // Arquivo com valor específico acima do que está no banco
         if (this.file[this.alert.MEDITION_TYPE] > this.alert.VALUE) {
-            // índice do arquivo que está na condição para ser monitorado e alertado
             include = off_range_files.findIndex((off_range) => {
                 return off_range.ID === this.alert.ID;
             });
@@ -420,29 +391,22 @@ class MonitMtd {
                     ID_REF: this.alert.ID_REF,
                     TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
-                    //Se foi enviado o e-mail ou não
                     SEND_EMAIL: false,
-                    //Registra o tempo que chegou na condição
                     OFF_RANGE_DATE: this.current_date,
                     VALUE: this.alert.VALUE,
-                    //   VALOR ATUAL DO SENSOR
                     VALUE_JSON: this.file[this.alert.MEDITION_TYPE],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
                     TIME_ALERT: this.alert.TIME,
-                    // POSITION: alert.POSITION,
+                    POSITION: null,
                     EMAIL: this.alert.EMAIL,
                     NAME: this.alert.NAME,
                     CREATED_ALERT: this.alert.CREATED_AT,
                 });
             }
-            // Se existir e nÃ£o tive enviado o email entÃo calcula o tempo que está naquela condição esperada
             else if (include >= 0) {
                 verifyOffRangeFiles(include, this.alert, this.current_date, this.file);
             }
         }
-
-        //Se sair da faixa dos valores da condição ACIMA então irá apagar o registro do off_range_files
-        // OBS: irá apagar somente o valor que sair da faixa, condição muito específica
         else {
             include = off_range_files.findIndex((off_range) => {
                 return off_range.ID === this.alert.ID;
@@ -466,23 +430,18 @@ class MonitMtd {
                         ID_REF: this.alert.ID_REF,
                         TYPE: this.alert.TYPE,
                         CONDITION: this.alert.CONDITION,
-                        //Se foi enviado o e-mail ou não
                         SEND_EMAIL: false,
-                        //Registra o tempo que chegou na condição
                         OFF_RANGE_DATE: this.current_date,
                         VALUE: this.alert.VALUE,
-                        //   VALOR ATUAL DO SENSOR
                         VALUE_JSON: this.file.RF.stat,
                         MEDITION_TYPE: this.alert.MEDITION_TYPE,
-                        // UNIT: alert.UNIT,
                         TIME_ALERT: this.alert.TIME,
-                        // POSITION: alert.POSITION,
+                        POSITION: null,
                         EMAIL: this.alert.EMAIL,
                         NAME: this.alert.NAME,
                         CREATED_ALERT: this.alert.CREATED_AT,
                     });
                 }
-                // Se existir e nÃ£o tive enviado o email entÃo calcula o tempo que está naquela condição esperada
                 else if (include >= 0) {
                     verifyOffRangeFiles(
                         include,
@@ -524,9 +483,8 @@ class MonitMtd {
                     VALUE: this.alert.VALUE,
                     VALUE_JSON: this.file[this.alert.MEDITION_TYPE],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
-                    // UNIT: alert.UNIT,
                     TIME_ALERT: this.alert.TIME,
-                    // POSITION: alert.POSITION,
+                    POSITION: null,
                     EMAIL: this.alert.EMAIL,
                     NAME: this.alert.NAME,
                     CREATED_ALERT: this.alert.CREATED_AT,
@@ -577,10 +535,7 @@ class MonitEqp {
     }
     async up() {
         let include = null;
-
-        // Arquivo com valor específico acima do que está no banco
         if (this.file[this.alert.MEDITION_TYPE] > this.alert.VALUE) {
-            // índice do arquivo que está na condição para ser monitorado e alertado
             include = off_range_files.findIndex((off_range) => {
                 return off_range.ID === this.alert.ID;
             });
@@ -590,12 +545,9 @@ class MonitEqp {
                     ID_REF: this.alert.ID_REF,
                     TYPE: this.alert.TYPE,
                     CONDITION: this.alert.CONDITION,
-                    //Se foi enviado o e-mail ou não
                     SEND_EMAIL: false,
-                    //Registra o tempo que chegou na condição
                     OFF_RANGE_DATE: this.current_date,
                     VALUE: this.alert.VALUE,
-                    //   VALOR ATUAL DO SENSOR
                     VALUE_JSON: this.file[this.alert.MEDITION_TYPE],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
                     TIME_ALERT: this.alert.TIME,
@@ -605,14 +557,10 @@ class MonitEqp {
                     CREATED_ALERT: this.alert.CREATED_AT,
                 });
             }
-            // Se existir e nÃ£o tive enviado o email entÃo calcula o tempo que está naquela condição esperada
             else if (include >= 0) {
                 verifyOffRangeFiles(include, this.alert, this.current_date, this.file);
             }
         }
-
-        //Se sair da faixa dos valores da condição ACIMA então irá apagar o registro do off_range_files
-        // OBS: irá apagar somente o valor que sair da faixa, condição muito específica
         else {
             include = off_range_files.findIndex((off_range) => {
                 return off_range.ID === this.alert.ID;
@@ -640,7 +588,6 @@ class MonitEqp {
                     VALUE: this.alert.VALUE,
                     VALUE_JSON: this.file[this.alert.MEDITION_TYPE],
                     MEDITION_TYPE: this.alert.MEDITION_TYPE,
-                    // UNIT: alert.UNIT,
                     TIME_ALERT: this.alert.TIME,
                     POSITION: null,
                     EMAIL: this.alert.EMAIL,
