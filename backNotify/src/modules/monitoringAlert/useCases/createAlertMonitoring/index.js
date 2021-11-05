@@ -1,7 +1,7 @@
 import { readAllDirs } from "../../../../shared/utils/readAndOrganizeFiles"
 import { AlertLoop } from "./MonitoringLoop"
-import {NotificationService} from './NotificationService'
+import {AlertUseCase} from './AlertUseCase'
 
 
-const alertLoop=new AlertLoop(NotificationService,readAllDirs)
+const alertLoop=new AlertLoop(AlertUseCase,readAllDirs)
 export {alertLoop}

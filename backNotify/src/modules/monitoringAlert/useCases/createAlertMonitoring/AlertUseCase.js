@@ -2,7 +2,7 @@ import { NotificationRepository } from "../../../notifications/infra/Knex/reposi
 import { monitoring } from "./monitoringFiles/MonitFiles";
 let current_date = Date.now();
 
-async function NotificationService(monit_files) {
+async function AlertUseCase(monit_files) {
     const notificationRepository = new NotificationRepository();
     const notifications = await notificationRepository.show();
     for (let alert of notifications) {
@@ -29,4 +29,4 @@ async function NotificationService(monit_files) {
 
 
 
-export { NotificationService };
+export { AlertUseCase };

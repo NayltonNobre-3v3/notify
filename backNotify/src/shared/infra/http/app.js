@@ -3,7 +3,7 @@ import cors from "cors";
 import 'express-async-errors'
 import { router } from "./routes/routes";
 import { AppErrors } from '../../errors/AppErrors';
-import { alertLoop } from "../../../modules/monitoring/useCases/createMonitoring";
+import { alertLoop } from "../../../modules/monitoringAlert/useCases/createAlertMonitoring";
 
 
 class Notify {

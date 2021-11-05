@@ -1,6 +1,6 @@
 import {Router} from 'express'
 
-import showMonitFiles from '../../../../modules/monitoring/useCases/showMonitoringFiles'
+import showMonitFiles from '../../../../modules/monitoringAlert/useCases/showMonitoringFiles'
 
 const monitRouter=Router()
 
