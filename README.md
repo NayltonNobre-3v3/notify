@@ -8,6 +8,15 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 - [Knex](http://knexjs.org/)
 
 ### Utilizando o Server
+#É necessário criar um arquivo .env com base no modelo de arquivo .env-example contendo as configurações necessário para o funcionamento do servidor
+```sh
+  HOST=Host do banco de dados
+  USER= Usuário do banco de dados
+  PASSWORD= Senha do banco de dados
+  DATABASE= Banco de dados utilizado
+  ROOT=example/past/file -> onde irá ficar o pasta com os aquivos do /mnt/fcir
+  MAIL_PROVIDER=
+```
 
 ```sh
 #Criar um arquivo de migration
@@ -27,19 +36,11 @@ $  npx knex migrate:make name_migration
 ```
 ### Organização das pastas
 
-  - **WriteRead**
-    Pasta que engloba as operações envolvendo o monitoramento do server
-  - **WriteRead/function/WriteRead**
-    Onde irá realizar as operações: **Ler diretório**,**Ler banco de notificações**,**Verificar condições**,**Calcular variações**,**Enviar email**.
-  - **variables_api**
-    Variáveis globais em que seus valores podem ser acessados em qualquer lugar do servidor.
-  - **Resources**
-    Onde está o arquivo HTML+CSS resposáveis por dar o visual do email que irá ser enviado.
   - **Modules**
-    Configuração do nodemailer.
+    Pasta com os casos de usos e controladores do sistema
+  - **Shared**
+    Onde irá ficar a infraestrutura principal do sistema (Aplicação do knex, rotas http, e outras implementações de libs de terceiros...).
   - **Config**
-    Arquivo com informações sobre a conta do email, porta e qual serviço de email é usado.
-  - **Database**
-    Pasta que armazena o arquivo de configuração do banco (connection.js) e as migrations.
+    Configurações de algumas libs
 
 
