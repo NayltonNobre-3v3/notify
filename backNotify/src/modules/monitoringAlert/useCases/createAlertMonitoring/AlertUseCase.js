@@ -9,7 +9,7 @@ async function AlertUseCase(monit_files) {
         current_date = Date.now();
         switch (alert.TYPE) {
             case "sns":
-                await monitoring.Sensor.startMonitoring(monit_files,alert,current_date)
+                await monitoring.Sensor.startMonitoring(monit_files,alert,current_date,notifications)
                 break;
             case "dir":
                 await monitoring.Dir.startMonitoring(monit_files,alert,current_date)

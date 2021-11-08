@@ -4,7 +4,7 @@ import {off_range_files,addToRange,removeFromRange,verifyOffRangeFiles} from '..
 // file -> Arquivo lido do json
 //alert-> alerta do banco de dados
 class MonitSns {
-    async startMonitoring(monit_files, alert, current_date) {
+    async startMonitoring(monit_files, alert, current_date,alerts) {
         this.alert = alert;
         this.current_date = current_date;
         this.file = monit_files["sns"].find((file) => {
@@ -15,7 +15,7 @@ class MonitSns {
             console.log(`[ERROR] - Não foi possível encontrar o sensor com o ID=${this.alert.ID_REF} igual ao do alerta`);
             return;
         }
-
+        console.log('qtd -> alerts: ',alerts.length)
         switch (this.alert.CONDITION) {
             case "ACIMA":
                 await this.up();

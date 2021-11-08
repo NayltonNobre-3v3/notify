@@ -22,4 +22,5 @@ notifRouter.delete('/alert/:id',(req,resp)=>{
 notifRouter.put('/alert/:id',(req,resp)=>{
     return updateNotification().handle(req,resp)
 })
+
 export {notifRouter}
