@@ -8,7 +8,12 @@ class ShowFileUseCase {
             monitoringApi.files[type].map((e) => {
                 data.push(e);
             });
-            const filter = data.filter((e) => e.ID === Number(id));
+            const filter = data.filter((e) => {
+                if(type==='sns'){
+                    return e.ID === Number(id)
+                }
+                return e.ID === id
+            });
             return filter
         } catch (error) {
             console.log('ShowFileUseCase -> execute : ', error)
