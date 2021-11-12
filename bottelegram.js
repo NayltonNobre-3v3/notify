@@ -14,7 +14,7 @@ let min = data.getMinutes();
 let seg = data.getSeconds();
 let str_hora = hora + ':' + min + ':' + seg;
 //Variáveis responsáveis por retornar a data e hora atual.
-cron.schedule('*/5 * * * * *', async () => {
+cron.schedule('*/5 * * * * *', () => {
 bot.telegram.sendMessage(CHAT_ID, 'Varredura executada as ' + str_hora + '.'
 )})
 bot.launch();
