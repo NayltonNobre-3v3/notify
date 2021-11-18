@@ -4,39 +4,40 @@ const BOT_TOKEN = "2138693355:AAGIENksrmbZ3jfgeUsTDDsJb8yZlTitnAc";
 const CHAT_ID = "-1001751528466"
 //Variável responsável pelo TOKEN.
 
+
 const bot = new Telegraf(BOT_TOKEN)
 
 const cron = require('node-cron')
+const express = require("express");
 
-let data = new Date();
-let hora = data.getHours();
-let min = data.getMinutes();
-let seg = data.getSeconds();
-let str_hora = hora + ':' + min + ':' + seg;
+app = express();
+
+const envtelegram = new cron.schedule('*/5 * * * *', () => {
+  let data = new Date();
+  let hora = data.getHours();
+  let min = data.getMinutes();
+  let seg = data.getSeconds();
+  let hourcomplete = hora + ':' + min + ':' + seg;
 //Variáveis responsáveis por retornar a data e hora atual.
-cron.schedule('*/5 * * * * *', () => {
-bot.telegram.sendMessage(CHAT_ID, 'Varredura executada as ' + str_hora + '.'
-)})
-bot.launch();
+  bot.telegram.sendMessage(CHAT_ID, 'Varredura executada as '
+  + hourcomplete)});
+//função responsável pela mensagem da varredura dos alertas.
+const envtelegram2 = new cron.schedule('0 7 * * *', () =>{
+  bot.telegram.sendMessage(CHAT_ID, 'Bom dia a todos!')
+});
+//teste - função responsável por ser educado part1
 
-//Em fase de testes.
+const envtelegram3 = new cron.schedule('0 12 * * *', () => {
+  bot.telegram.sendMessage(CHAT_ID, 'Boa tarde a todos!')
+})
+//teste - função responsável por ser educado part2
+
+const envtelegram4 = new cron.schedule('0 18 * * *', () => {
+  bot.telegram.sendMessage(CHAT_ID, 'Boa noite a todos!')
+})
+//teste - função responsável por ser educado part3
+
+  bot.launch();
 
 
-//bot.hears('Olá', (ctx) => ctx.reply('Hello ' + ctx.from.first_name + '!'));
-
-/*bot.command ('teclado', (ctx) => { 
-    ctx.reply ( 
-      'Teclado', 
-      Markup.inlineKeyboard ([ 
-        Markup.button.callback ('Primeira opção', 'primeiro'), 
-        Markup.button.callback (' Segunda opção ',' segunda '), 
-      ]) 
-    ); 
-  });
- bot.launch();*/
-
- //bot.command('quit', (ctx) => {
-    // Explicit usage
-    //ctx.telegram.leaveChat(ctx.message.chat.id)
   
-    // Using context shortcut
