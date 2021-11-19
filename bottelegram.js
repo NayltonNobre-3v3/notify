@@ -35,18 +35,18 @@ const envtelegram = new cron.schedule('*/5 * * * *', () => {
     + '\nXXXXXXXXXXXXXXXX'
     )});
 //função responsável pela mensagem da varredura dos alertas.
-const envtelegram2 = new cron.schedule('0 7 * * *', () =>{
+const envtelegram2 = new cron.schedule('59 6 * * *', () =>{
   bot.telegram.sendMessage(CHAT_ID, 'Bom dia a todos!')
   
 });
 //teste - função responsável por ser educado part1
 
-const envtelegram3 = new cron.schedule('1 13 * * *', () => {
+const envtelegram3 = new cron.schedule('59 12 * * *', () => {
   bot.telegram.sendMessage(CHAT_ID, 'Boa tarde a todos!')
 })
 //teste - função responsável por ser educado part2
 
-const envtelegram4 = new cron.schedule('0 18 * * *', () => {
+const envtelegram4 = new cron.schedule('59 17 * * *', () => {
   bot.telegram.sendMessage(CHAT_ID, 'Boa noite a todos!')
 })
 //teste - função responsável por ser educado part3
